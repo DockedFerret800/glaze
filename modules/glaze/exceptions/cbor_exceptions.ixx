@@ -1,17 +1,19 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
 export module glaze.exceptions.cbor_exceptions;
-
 #if __cpp_exceptions
-
 import std;
-
 import glaze.cbor;
 import glaze.exceptions.core_exceptions;
+import glaze.core.context;
+import glaze.core.opts;
 import glaze.util.string_literal;
-
 namespace glz::ex
 {
+   using glz::opts;
+   using glz::sv;
+   using glz::error_code;
+
    export template <class T, class Buffer>
    void read_cbor(T& value, Buffer&& buffer)
    {
@@ -20,7 +22,6 @@ namespace glz::ex
          throw std::runtime_error("read_cbor error");
       }
    }
-
    export template <class T, class Buffer>
    [[nodiscard]] T read_cbor(Buffer&& buffer)
    {
@@ -30,7 +31,6 @@ namespace glz::ex
       }
       return ex.value();
    }
-
    export template <auto Opts = opts{}, class T>
    void read_file_cbor(T& value, const sv file_name, auto&& buffer)
    {
@@ -43,7 +43,6 @@ namespace glz::ex
       }
    }
 }
-
 namespace glz::ex
 {
    export template <class T, class Buffer>
@@ -54,7 +53,6 @@ namespace glz::ex
          throw std::runtime_error("write_cbor error");
       }
    }
-
    export template <class T>
    [[nodiscard]] auto write_cbor(T&& value)
    {
@@ -66,7 +64,6 @@ namespace glz::ex
          throw std::runtime_error("write_cbor error");
       }
    }
-
    export template <auto Opts = opts{}, class T>
    void write_file_cbor(T&& value, const sv file_name, auto&& buffer)
    {
@@ -79,5 +76,4 @@ namespace glz::ex
       }
    }
 }
-
 #endif

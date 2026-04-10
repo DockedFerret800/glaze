@@ -1,15 +1,19 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
 export module glaze.exceptions.msgpack_exceptions;
-
 #if __cpp_exceptions
-
 import glaze.exceptions.core_exceptions;
 import glaze.msgpack;
+import glaze.core.context;
+import glaze.core.opts;
 import glaze.util.string_literal;
-
+import std;
 namespace glz::ex
 {
+   using glz::opts;
+   using glz::sv;
+   using glz::error_code;
+
    export template <class T, class Buffer>
    void read_msgpack(T& value, Buffer&& buffer)
    {
@@ -18,7 +22,6 @@ namespace glz::ex
          throw std::runtime_error("read_msgpack error");
       }
    }
-
    export template <class T, class Buffer>
    [[nodiscard]] T read_msgpack(Buffer&& buffer)
    {
@@ -28,7 +31,6 @@ namespace glz::ex
       }
       return ex.value();
    }
-
    export template <auto Opts = opts{}, class T>
    void read_file_msgpack(T& value, const sv file_name, auto&& buffer)
    {
@@ -41,7 +43,6 @@ namespace glz::ex
       }
    }
 }
-
 namespace glz::ex
 {
    export template <class T, class Buffer>
@@ -52,7 +53,6 @@ namespace glz::ex
          throw std::runtime_error("write_msgpack error");
       }
    }
-
    export template <class T>
    [[nodiscard]] auto write_msgpack(T&& value)
    {
@@ -64,7 +64,6 @@ namespace glz::ex
          throw std::runtime_error("write_msgpack error");
       }
    }
-
    export template <auto Opts = opts{}, class T>
    void write_file_msgpack(T&& value, const sv file_name, auto&& buffer)
    {
@@ -77,5 +76,4 @@ namespace glz::ex
       }
    }
 }
-
 #endif

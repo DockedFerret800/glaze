@@ -1,6 +1,7 @@
-cmake_minimum_required(VERSION 4.3) 
+cmake_minimum_required(VERSION 4.3)
 
-set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b") 
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b")
+set(CMAKE_CXX_MODULE_STD ON)
 
 include(cmake/prelude.cmake)
 
@@ -11,10 +12,6 @@ project(
 )
 
 option(GLAZE_ENABLE_MODULES "Enable modules with import std" ON) # or GLAZE_GENERATE_HEADERS ??
-
-if (GLAZE_ENABLE_MODULES)
-   set(CMAKE_CXX_MODULE_STD 1)
-endif()
 
 include(cmake/project-is-top-level.cmake)
 include(cmake/variables.cmake)
@@ -37,12 +34,12 @@ if (MSVC)
   if (matched_cl)
     # for a C++ standards compliant preprocessor, not needed for clang-cl
     target_compile_options(glaze_glaze INTERFACE "/Zc:preprocessor" /permissive- /Zc:lambda)
-    
+
     if(PROJECT_IS_TOP_LEVEL)
-      target_compile_options(glaze_glaze INTERFACE 
+      target_compile_options(glaze_glaze INTERFACE
         $<$<CONFIG:Release>:/GL>
         $<$<CONFIG:MinSizeRel>:/GL>)
-      target_link_options(glaze_glaze INTERFACE 
+      target_link_options(glaze_glaze INTERFACE
         $<$<CONFIG:Release>:/LTCG /INCREMENTAL:NO>
         $<$<CONFIG:MinSizeRel>:/LTCG /INCREMENTAL:NO>)
     endif()
@@ -64,10 +61,23 @@ target_include_directories(
 
 include(cmake/modules-files.cmake)
 
+if(GLAZE_ENABLE_MODULES)
+include(GNUInstallDirs)
+install(
+    TARGETS glaze_glaze
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    CXX_MODULES_BMI DESTINATION ${CMAKE_INSTALL_LIBDIR}/cxx/bmi
+)
+configure_file(${CMAKE_SOURCE_DIR}/packaging/glaze.pc.in glaze.pc @ONLY)
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/glaze.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+)
+else()
 if(NOT CMAKE_SKIP_INSTALL_RULES)
   include(cmake/install-rules.cmake)
 endif()
-
+endif()
 if (glaze_DEVELOPER_MODE)
   include(cmake/dev-mode.cmake)
 endif()
@@ -116,4 +126,3 @@ if(glaze_ENABLE_SSL)
   )
   target_compile_definitions(glaze_glaze INTERFACE GLZ_ENABLE_SSL)
 endif(glaze_ENABLE_SSL)
-

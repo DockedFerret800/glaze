@@ -1,20 +1,19 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
 export module glaze.exceptions.core_exceptions;
-
 #if __cpp_exceptions
-
 import glaze.core.read;
 import glaze.core.write;
-
+import glaze.core.opts;
+import glaze.core.context;
+import glaze.concepts.container_concepts;
 import glaze.util.string_literal;
-
 import std;
-
 using std::size_t;
-
 namespace glz::ex
 {
+   using glz::read_supported;
+
    export template <auto Opts, class T>
       requires read_supported<T, Opts.format>
    void read(T&& value, auto&& buffer)
@@ -25,9 +24,15 @@ namespace glz::ex
       }
    }
 }
-
 namespace glz::ex
 {
+   using glz::write_supported;
+   using glz::output_buffer;
+   using glz::raw_buffer;
+   using glz::is_context;
+   using glz::sv;
+   using glz::context;
+
    // For writing to a std::string, std::vector<char>, std::deque<char> and the like
    export template <auto Opts, class T, output_buffer Buffer>
       requires write_supported<T, Opts.format>
@@ -38,7 +43,6 @@ namespace glz::ex
          throw std::runtime_error(format_error(ec, buffer));
       }
    }
-
    export template <auto& Partial, auto Opts, class T, output_buffer Buffer>
       requires write_supported<T, Opts.format>
    void write(T&& value, Buffer& buffer)
@@ -48,15 +52,13 @@ namespace glz::ex
          throw std::runtime_error(format_error(ec, buffer));
       }
    }
-
    export template <auto Opts, class T, output_buffer Buffer>
       requires write_supported<T, Opts.format>
    void write(T&& value, Buffer& buffer)
    {
-      glz::context ctx{};
+      context ctx{};
       glz::ex::write<Opts>(std::forward<T>(value), buffer, ctx);
    }
-
    export template <auto Opts, class T>
       requires write_supported<T, Opts.format>
    [[nodiscard]] std::string write(T&& value)
@@ -67,7 +69,6 @@ namespace glz::ex
       }
       return e.value();
    }
-
    export template <auto Opts, class T, raw_buffer Buffer>
       requires write_supported<T, Opts.format>
    [[nodiscard]] size_t write(T&& value, Buffer&& buffer)
@@ -78,15 +79,13 @@ namespace glz::ex
       }
       return e.value();
    }
-
    // requires file_name to be null terminated
    export void buffer_to_file(auto&& buffer, const sv file_name)
    {
-      const auto ec = buffer_to_file(buffer, file_name);
+      const auto ec = glz::buffer_to_file(buffer, file_name);
       if (bool(ec)) [[unlikely]] {
          throw std::runtime_error(format_error(ec, buffer));
       }
    }
 }
-
 #endif
