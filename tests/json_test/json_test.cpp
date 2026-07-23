@@ -1,6 +1,6 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
-
+#include <version>
 import std;
 
 import glaze;
@@ -34,15 +34,14 @@ import ut;
 
 #include "glaze/core/feature_test.hpp"
 
-using std::int8_t;
-using std::uint8_t;
 using std::int16_t;
-using std::uint16_t;
-using std::int32_t;
-using std::uint32_t;
 using std::int64_t;
-using std::uint64_t;
+using std::int8_t;
 using std::size_t;
+using std::uint16_t;
+using std::uint32_t;
+using std::uint64_t;
+using std::uint8_t;
 
 using namespace ut;
 using std::uint_fast32_t;
@@ -525,7 +524,7 @@ struct DummyData
 {
    uint32_t id{0};
 
-   int32_t a{0};
+   std::int32_t a{0};
 
    TestData b{TestData::None};
    TestData c{TestData::None};
@@ -2031,11 +2030,13 @@ suite user_types = [] {
    };
 
    "complex user obect member names"_test = [] {
-      expect(glz::name_v<glz::detail::member_tuple_t<Thing>> ==
-             "glz::tuple<sub_thing,std::array<sub_thing2,1>,V3,std::list<std::int32_t>,std::deque<double>,std::"
-             "vector<V3>,std::int32_t,double,bool,char,std::variant<var1_t,var2_t>,Color,std::vector<bool>,std::shared_ptr<"
-             "sub_thing>,std::optional<V3>,std::array<std::string,4>,std::map<std::string,std::int32_t>,std::map<std::int32_t,"
-             "double>,sub_thing*>");
+      expect(
+         glz::name_v<glz::detail::member_tuple_t<Thing>> ==
+         "glz::tuple<sub_thing,std::array<sub_thing2,1>,V3,std::list<std::int32_t>,std::deque<double>,std::"
+         "vector<V3>,std::int32_t,double,bool,char,std::variant<var1_t,var2_t>,Color,std::vector<bool>,std::shared_ptr<"
+         "sub_thing>,std::optional<V3>,std::array<std::string,4>,std::map<std::string,std::int32_t>,std::map<std::"
+         "int32_t,"
+         "double>,sub_thing*>");
    };
 };
 
@@ -3858,7 +3859,7 @@ suite raw_json_whitespace_tests = [] {
    "raw_json_vs_generic_comparison"_test = [] {
       // Test that both raw_json and generic work correctly with formatted content
       std::string input_json = R"({
-                "type": "mytype", 
+                "type": "mytype",
                 "formatted_field": {
                     "nested": {
                         "value": "test"
@@ -4696,7 +4697,7 @@ suite json_schema = [] {
       // when you update this string
       expect(
          schema ==
-         R"({"type":"object","properties":{"array":{"type":"array","items":{"type":"string"},"maxItems":4},"b":{"type":"boolean"},"c":{"type":"string"},"color":{"type":"string","oneOf":[{"title":"Red","const":"Red"},{"title":"Green","const":"Green"},{"title":"Blue","const":"Blue"}]},"d":{"$ref":"#/$defs/double"},"deque":{"type":"array","items":{"$ref":"#/$defs/double"}},"i":{"$ref":"#/$defs/int32_t"},"list":{"type":"array","items":{"$ref":"#/$defs/int32_t"}},"map":{"type":"object","additionalProperties":{"$ref":"#/$defs/int32_t"}},"mapi":{"type":"object","additionalProperties":{"$ref":"#/$defs/double"}},"optional":{"anyOf":[{"$ref":"#/$defs/V3"},{"type":"null"}]},"sptr":{"anyOf":[{"$ref":"#/$defs/sub_thing"},{"type":"null"}]},"thing":{"$ref":"#/$defs/sub_thing"},"thing2array":{"type":"array","items":{"type":"object","properties":{"a":{"$ref":"#/$defs/double"},"b":{"type":"string"},"c":{"$ref":"#/$defs/double"},"d":{"$ref":"#/$defs/double"},"e":{"$ref":"#/$defs/double"},"f":{"$ref":"#/$defs/float"},"g":{"$ref":"#/$defs/double"},"h":{"$ref":"#/$defs/double"}},"additionalProperties":false},"maxItems":1},"thing_ptr":{"anyOf":[{"$ref":"#/$defs/sub_thing"},{"type":"null"}]},"v":{"type":"object","oneOf":[{"type":"object","properties":{"x":{"$ref":"#/$defs/double"}},"additionalProperties":false,"title":"var1_t"},{"type":"object","properties":{"y":{"$ref":"#/$defs/double"}},"additionalProperties":false,"title":"var2_t"}]},"vb":{"type":"array","items":{"type":"boolean"}},"vec3":{"$ref":"#/$defs/V3"},"vector":{"type":"array","items":{"$ref":"#/$defs/V3"}}},"additionalProperties":false,"$defs":{"V3":{"type":"array","prefixItems":[{"type":"number","minimum":-1.7976931348623157E308,"maximum":1.7976931348623157E308},{"type":"number","minimum":-1.7976931348623157E308,"maximum":1.7976931348623157E308},{"type":"number","minimum":-1.7976931348623157E308,"maximum":1.7976931348623157E308}],"items":false,"maxItems":3},"double":{"type":"number","minimum":-1.7976931348623157E308,"maximum":1.7976931348623157E308},"float":{"type":"number","minimum":-3.4028234663852886E38,"maximum":3.4028234663852886E38},"int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647},"sub_thing":{"type":"object","properties":{"a":{"$ref":"#/$defs/double"},"b":{"type":"string"}},"additionalProperties":false}},"examples":[{"thing":{},"i":42}],"required":["thing","i"],"title":"Thing"})")
+         R"({"type":"object","properties":{"array":{"type":"array","items":{"type":"string"},"maxItems":4},"b":{"type":"boolean"},"c":{"type":"string"},"color":{"type":"string","oneOf":[{"title":"Red","const":"Red"},{"title":"Green","const":"Green"},{"title":"Blue","const":"Blue"}]},"d":{"$ref":"#/$defs/double"},"deque":{"type":"array","items":{"$ref":"#/$defs/double"}},"i":{"$ref":"#/$defs/std::int32_t"},"list":{"type":"array","items":{"$ref":"#/$defs/std::int32_t"}},"map":{"type":"object","additionalProperties":{"$ref":"#/$defs/std::int32_t"}},"mapi":{"type":"object","additionalProperties":{"$ref":"#/$defs/double"}},"optional":{"anyOf":[{"$ref":"#/$defs/V3"},{"type":"null"}]},"sptr":{"anyOf":[{"$ref":"#/$defs/sub_thing"},{"type":"null"}]},"thing":{"$ref":"#/$defs/sub_thing"},"thing2array":{"type":"array","items":{"type":"object","properties":{"a":{"$ref":"#/$defs/double"},"b":{"type":"string"},"c":{"$ref":"#/$defs/double"},"d":{"$ref":"#/$defs/double"},"e":{"$ref":"#/$defs/double"},"f":{"$ref":"#/$defs/float"},"g":{"$ref":"#/$defs/double"},"h":{"$ref":"#/$defs/double"}},"additionalProperties":false},"maxItems":1},"thing_ptr":{"anyOf":[{"$ref":"#/$defs/sub_thing"},{"type":"null"}]},"v":{"type":"object","oneOf":[{"type":"object","properties":{"x":{"$ref":"#/$defs/double"}},"additionalProperties":false,"title":"var1_t"},{"type":"object","properties":{"y":{"$ref":"#/$defs/double"}},"additionalProperties":false,"title":"var2_t"}]},"vb":{"type":"array","items":{"type":"boolean"}},"vec3":{"$ref":"#/$defs/V3"},"vector":{"type":"array","items":{"$ref":"#/$defs/V3"}}},"additionalProperties":false,"$defs":{"V3":{"type":"array","prefixItems":[{"type":"number","minimum":-1.7976931348623157E308,"maximum":1.7976931348623157E308},{"type":"number","minimum":-1.7976931348623157E308,"maximum":1.7976931348623157E308},{"type":"number","minimum":-1.7976931348623157E308,"maximum":1.7976931348623157E308}],"items":false,"maxItems":3},"double":{"type":"number","minimum":-1.7976931348623157E308,"maximum":1.7976931348623157E308},"float":{"type":"number","minimum":-3.4028234663852886E38,"maximum":3.4028234663852886E38},"std::int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647},"sub_thing":{"type":"object","properties":{"a":{"$ref":"#/$defs/double"},"b":{"type":"string"}},"additionalProperties":false}},"examples":[{"thing":{},"i":42}],"required":["thing","i"],"title":"Thing"})")
          << schema;
    };
 };
@@ -8037,8 +8038,7 @@ suite constexpr_values_test = [] {
    };
 
    "constexpr blend with non constexpr variant"_test = [] {
-      std::variant<std::monostate, direct_cx_value_conversion_different_value, direct_cx_value_conversion,
-                   uint64_t>
+      std::variant<std::monostate, direct_cx_value_conversion_different_value, direct_cx_value_conversion, uint64_t>
          var{uint64_t{111}};
       std::string s{};
       expect(not glz::write_json(var, s));
@@ -8353,7 +8353,7 @@ suite integer_over_under_flow = [] {
       s = "-209380980";
       expect(glz::read_json(x16, s) == glz::error_code::parse_number_failure);
 
-      int32_t x32{};
+      std::int32_t x32{};
       s = "4294967297";
       expect(glz::read_json(x32, s) == glz::error_code::parse_number_failure);
 
@@ -8411,9 +8411,9 @@ suite number_reading = [] {
 
    "minimum std::int32_t"_test = [] {
       std::string buffer{"-2147483648"};
-      int32_t i{};
+      std::int32_t i{};
       expect(!glz::read_json(i, buffer));
-      expect(i == (std::numeric_limits<int32_t>::min)());
+      expect(i == (std::numeric_limits<std::int32_t>::min)());
 
       expect(not glz::write_json(i, buffer));
       expect(buffer == "-2147483648");
@@ -10593,7 +10593,7 @@ suite meta_schema_tests = [] {
       const auto json_schema = glz::write_json_schema<meta_schema_t>().value_or("error");
       expect(
          json_schema ==
-         R"({"type":"object","properties":{"file_name":{"type":"string","description":"provide a file name to load"},"is_valid":{"type":"boolean","description":"for validation"},"x":{"$ref":"#/$defs/int32_t","description":"x is a special integer"}},"additionalProperties":false,"$defs":{"int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"meta_schema_t"})")
+         R"({"type":"object","properties":{"file_name":{"type":"string","description":"provide a file name to load"},"is_valid":{"type":"boolean","description":"for validation"},"x":{"$ref":"#/$defs/std::int32_t","description":"x is a special integer"}},"additionalProperties":false,"$defs":{"std::int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"meta_schema_t"})")
          << json_schema;
    };
 
@@ -10623,7 +10623,7 @@ suite meta_schema_tests = [] {
    },
    "additionalProperties": false,
    "$defs": {
-      "int32_t": {
+      "std::int32_t": {
          "type": "integer",
          "minimum": -2147483648,
          "maximum": 2147483647
@@ -11493,7 +11493,7 @@ struct struct_for_volatile
 {
    glz::volatile_array<uint16_t, 4> a{};
    bool b{};
-   int32_t c{};
+   std::int32_t c{};
    double d{};
    uint32_t e{};
 };
@@ -11509,7 +11509,7 @@ struct my_volatile_struct
 {
    glz::volatile_array<uint16_t, 4> a{};
    bool b{};
-   int32_t c{};
+   std::int32_t c{};
    double d{};
    uint32_t e{};
 };
@@ -11584,7 +11584,7 @@ suite volatile_tests = [] {
       expect(glz::get<volatile uint16_t>(obj, "/a/0") == uint16_t(1));
       expect(glz::get<volatile uint16_t>(obj, "/a/1") == uint16_t(2));
       expect(glz::get<volatile bool>(obj, "/b") == true);
-      expect(glz::get<volatile int32_t>(obj, "/c") == int32_t(-7));
+      expect(glz::get<volatile std::int32_t>(obj, "/c") == std::int32_t(-7));
       expect(glz::get<volatile double>(obj, "/d") == 9.9);
       expect(glz::get<volatile uint32_t>(obj, "/e") == uint32_t(12));
    };
@@ -12502,7 +12502,7 @@ suite bools_as_numbers_test = [] {
 struct partial_struct
 {
    std::string string{};
-   int32_t integer{};
+   std::int32_t integer{};
 };
 
 suite read_allocated_tests = [] {
@@ -14154,6 +14154,11 @@ suite member_function_pointer_serialization = [] {
 #elif defined(_MSC_VER)
       // MSVC produces fully qualified type names with calling convention
       expect(buffer.find("MemberFunctionThing") != std::string::npos && buffer.find("test_item") != std::string::npos)
+         << buffer;
+#elif defined(_LIBCPP_VERSION)
+      // libc++ uses the __1 inline ABI namespace for std::string
+      expect(buffer ==
+             R"({"name":"test_item","description":"std::__1::basic_string<char> (MemberFunctionThing::*)() const"})")
          << buffer;
 #else
       expect(buffer == R"({"name":"test_item","description":"std::string (MemberFunctionThing::*)() const"})")

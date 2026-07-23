@@ -1,9 +1,6 @@
-project(ostream_buffer_test)
-
-add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE glz_test_common)
-
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
-
-target_code_coverage(${PROJECT_NAME} AUTO ALL)
+add_executable(ostream_buffer_test)
+target_sources(
+    ostream_buffer_test
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ostream_buffer_test.cpp)
+target_link_libraries(ostream_buffer_test PRIVATE ut::ut glaze glaze::asio)
+add_test(NAME ostream_buffer_test COMMAND ostream_buffer_test)

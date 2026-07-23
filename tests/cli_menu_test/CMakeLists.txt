@@ -1,5 +1,5 @@
-project(cli_menu_test)
-
-add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE glz_test_common)
+add_executable(cli_menu_test)
+target_sources(
+    cli_menu_test
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/cli_menu_test.cpp)
+target_link_libraries(cli_menu_test PRIVATE ut::ut glaze glaze::asio)

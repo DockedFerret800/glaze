@@ -4,15 +4,13 @@
 // Comprehensive tests for simple_float.hpp
 // Tests roundtrip correctness of simple_float implementations
 
-#include "glaze/util/zmij.hpp"
-
 import glaze.util.simple_float;
 
 import std;
 
 import glaze;
 import glaze.util.glaze_fast_float;
-
+import glaze.util.zmij;
 import ut;
 
 using std::uint32_t;

@@ -1,5 +1,5 @@
-project(key_transformers_test)
-
-add_executable(${PROJECT_NAME} key_transformers_test.cpp)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE glz_test_common)
+add_executable(key_transformers_test)
+target_sources(key_transformers_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/key_transformers_test.cpp)
+target_link_libraries(key_transformers_test PRIVATE ut::ut glaze glaze::asio)
+target_include_directories(key_transformers_test PRIVATE ${CMAKE_SOURCE_DIR}/modules)
+add_test(NAME key_transformers_test COMMAND key_transformers_test)

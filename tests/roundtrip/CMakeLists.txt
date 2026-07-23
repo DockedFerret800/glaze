@@ -1,16 +1,19 @@
-project(roundtrip)
+add_executable(roundtrip_JSON)
+target_sources(
+    roundtrip_JSON
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/roundtrip.cpp)
+target_compile_definitions(
+    roundtrip_JSON
+    PRIVATE GLZ_TEST_FORMAT=glz::JSON)
+target_link_libraries(roundtrip_JSON PRIVATE ut::ut glaze glaze::asio)
+add_test(NAME roundtrip_JSON COMMAND roundtrip_JSON)
 
-function(add_roundtrip_executable FORMAT)
-    set(EXE_NAME "${PROJECT_NAME}_${FORMAT}")
-    add_executable(${EXE_NAME} ${PROJECT_NAME}.cpp)
-    target_compile_definitions(${EXE_NAME} PRIVATE GLZ_TEST_FORMAT=glz::${FORMAT})
-    target_link_libraries(${EXE_NAME} PRIVATE glz_test_common)
-    add_test(NAME ${EXE_NAME} COMMAND ${EXE_NAME})
-    set_tests_properties(${EXE_NAME} PROPERTIES LABELS "format_${FORMAT}")
-endfunction()
-
-set(SUPPORTED_FORMATS JSON BEVE)
-
-foreach(FORMAT IN LISTS SUPPORTED_FORMATS)
-    add_roundtrip_executable(${FORMAT})
-endforeach()
+add_executable(roundtrip_BEVE)
+target_sources(
+    roundtrip_BEVE
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/roundtrip.cpp)
+target_compile_definitions(
+    roundtrip_BEVE
+    PRIVATE GLZ_TEST_FORMAT=glz::BEVE)
+target_link_libraries(roundtrip_BEVE PRIVATE ut::ut glaze glaze::asio)
+add_test(NAME roundtrip_BEVE COMMAND roundtrip_BEVE)
