@@ -13,7 +13,9 @@ add_library(glaze)
 set_target_properties(glaze PROPERTIES EXPORT_NAME "cxx_module")
 target_include_directories(
     glaze
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/modules>)
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/modules>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/glaze/modules>)
 set(GLAZE_MODULE_SOURCES
     ${CMAKE_SOURCE_DIR}/modules/glaze/glaze.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/json.ixx
@@ -264,6 +266,12 @@ install(
     EXPORT glaze-targets
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cps/glaze
     CXX_MODULES_DIRECTORY cxxmodules)
+
+install(
+    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/modules"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/glaze"
+    FILES_MATCHING
+    PATTERN "*.hpp")
 
 if(BUILD_TESTS)
     include(CTest)
