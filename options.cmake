@@ -25,3 +25,7 @@ option(
     "Build networking tests (requires
     OpenSSL)"
     OFF)
+option(
+    glaze_BUILD_SSL_TESTS
+    "Build SSL/TLS tests (requires OpenSSL headers matching target architecture)"
+    ON)

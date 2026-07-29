@@ -1,35 +1,64 @@
-project(json_performance)
+add_library(json_perf_common)
+target_sources(
+    json_perf_common
+    PUBLIC
+    FILE_SET CXX_MODULES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_perf_common.ixx)
+add_executable(json_performance)
+target_sources(
+    json_performance
+    PRIVATE
+    FILE_SET SOURCES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_performance.cpp)
+target_link_libraries(
+    json_performance
+    PRIVATE ut::ut glaze Boost::boost json_perf_common)
+add_test(NAME json_performance COMMAND json_performance)
 
-add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE glz_test_exceptions)
-
-if (MINGW)
-    target_compile_options(${PROJECT_NAME} PRIVATE "-Wa,-mbig-obj")
-endif ()
-
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
-
-set(PERF_TESTS
+add_executable(json_perf_strings)
+target_sources(
     json_perf_strings
+    PRIVATE
+    FILE_SET SOURCES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_perf_strings.cpp)
+target_link_libraries(
+    json_perf_strings
+    PRIVATE ut::ut glaze Boost::boost json_perf_common)
+add_test(NAME json_perf_strings COMMAND json_perf_strings)
+
+add_executable(json_perf_numbers)
+target_sources(
     json_perf_numbers
+    PRIVATE
+    FILE_SET SOURCES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_perf_numbers.cpp)
+target_link_libraries(
+    json_perf_numbers
+    PRIVATE ut::ut glaze Boost::boost json_perf_common)
+add_test(NAME json_perf_numbers COMMAND json_perf_numbers)
+
+add_executable(json_perf_objects)
+target_sources(
     json_perf_objects
+    PRIVATE
+    FILE_SET SOURCES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_perf_objects.cpp)
+target_link_libraries(
+    json_perf_objects
+    PRIVATE ut::ut glaze Boost::boost json_perf_common)
+add_test(NAME json_perf_objects COMMAND json_perf_objects)
+
+add_executable(json_perf_discord)
+target_sources(
     json_perf_discord
+    PRIVATE
+    FILE_SET SOURCES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_perf_discord.cpp)
+target_link_libraries(
+    json_perf_discord
+    PRIVATE ut::ut glaze Boost::boost json_perf_common)
+add_test(NAME json_perf_discord COMMAND json_perf_discord)
+
+add_executable(json_perf_benchmark)
+target_sources(
     json_perf_benchmark
-)
-
-foreach(test ${PERF_TESTS})
-    add_executable(${test} ${test}.cpp)
-    target_link_libraries(${test} PRIVATE glz_test_exceptions)
-    if (MINGW)
-        target_compile_options(${test} PRIVATE "-Wa,-mbig-obj")
-    endif ()
-    add_test(NAME ${test} COMMAND ${test})
-endforeach()
-
-target_sources(glaze_glaze
-  PUBLIC
-    FILE_SET CXX_MODULES
-    FILES
-    json_perf_common.ixx
-)
+    PRIVATE
+    FILE_SET SOURCES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_perf_benchmark.cpp)
+target_link_libraries(
+    json_perf_benchmark
+    PRIVATE ut::ut glaze Boost::boost json_perf_common)
+add_test(NAME json_perf_benchmark COMMAND json_perf_benchmark)

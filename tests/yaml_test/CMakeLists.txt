@@ -1,17 +1,7 @@
-project(yaml_test)
-
-add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE glz_test_common)
-
-if (MINGW)
-    target_compile_options(${PROJECT_NAME} PRIVATE "-Wa,-mbig-obj")
-endif ()
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE
+add_executable(yaml_test)
+target_sources(yaml_test PRIVATE FILE_SET SOURCES FILES yaml_test.cpp)
+target_link_libraries(yaml_test PRIVATE ut::ut glaze Boost::boost)
+target_compile_definitions(yaml_test PRIVATE
     GLZ_TEST_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}"
 )
-
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
-
-target_code_coverage(${PROJECT_NAME} AUTO ALL)
+add_test(NAME yaml_test COMMAND yaml_test)
