@@ -11,7 +11,6 @@ include(options.cmake)
 find_package(Eigen3 REQUIRED)
 
 add_library(glaze)
-target_link_libraries(glaze PRIVATE Eigen3::Eigen)
 set_target_properties(glaze PROPERTIES EXPORT_NAME "cxx_module")
 target_include_directories(
     glaze
@@ -229,6 +228,7 @@ set(GLAZE_MODULE_SOURCES
     ${CMAKE_SOURCE_DIR}/modules/glaze/toml/write.ixx # hash
     ${CMAKE_SOURCE_DIR}/modules/glaze/hash/sweethash.ixx)
 if(glaze_ENABLE_EIGEN)
+    target_link_libraries(glaze PRIVATE Eigen3::Eigen)
     list(APPEND GLAZE_MODULE_SOURCES
          ${CMAKE_SOURCE_DIR}/modules/glaze/ext/eigen.ixx)
 endif()
