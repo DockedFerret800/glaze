@@ -29,3 +29,4 @@ option(
     glaze_BUILD_SSL_TESTS
     "Build SSL/TLS tests (requires OpenSSL headers matching target architecture)"
     ON)
+option(glaze_ENABLE_EIGEN "Enable Eigen support" OFF)
