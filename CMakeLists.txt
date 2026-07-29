@@ -18,6 +18,7 @@ target_include_directories(
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/modules>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/glaze/modules>)
+
 set(GLAZE_MODULE_SOURCES
     ${CMAKE_SOURCE_DIR}/modules/glaze/glaze.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/json.ixx
@@ -215,7 +216,6 @@ set(GLAZE_MODULE_SOURCES
     ${CMAKE_SOURCE_DIR}/modules/glaze/msgpack/skip.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/msgpack/write.ixx # ext (external)
     ${CMAKE_SOURCE_DIR}/modules/glaze/ext/cli_menu.ixx
-    ${CMAKE_SOURCE_DIR}/modules/glaze/ext/eigen.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/ext/jsonrpc.ixx # compare
     ${CMAKE_SOURCE_DIR}/modules/glaze/compare/compare.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/compare/approx.ixx # stencil
@@ -228,6 +228,10 @@ set(GLAZE_MODULE_SOURCES
     ${CMAKE_SOURCE_DIR}/modules/glaze/toml/skip.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/toml/write.ixx # hash
     ${CMAKE_SOURCE_DIR}/modules/glaze/hash/sweethash.ixx)
+if(glaze_ENABLE_EIGEN)
+    list(APPEND GLAZE_MODULE_SOURCES
+         ${CMAKE_SOURCE_DIR}/modules/glaze/ext/eigen.ixx)
+endif()
 target_sources(glaze PUBLIC FILE_SET CXX_MODULES FILES ${GLAZE_MODULE_SOURCES})
 
 if(glaze_DISABLE_SIMD_WHEN_SUPPORTED)
