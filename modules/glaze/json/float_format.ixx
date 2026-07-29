@@ -16,6 +16,7 @@ import glaze.json.read;
 import glaze.json.write;
 
 import glaze.core.meta;
+import glaze.core.format_str;
 import glaze.core.opts;
 import glaze.core.write_chars;
 import glaze.core.context;
@@ -28,17 +29,6 @@ using std::size_t;
 
 export namespace glz
 {
-   // Compile-time string for use as template parameter
-   template <size_t N>
-   struct format_str
-   {
-      char data[N]{};
-
-      consteval format_str(const char (&str)[N]) noexcept { std::copy_n(str, N, data); }
-
-      constexpr operator std::string_view() const noexcept { return {data, N - 1}; }
-   };
-
    // Wrapper for formatting floats with a specific format string
    template <format_str Fmt, class T>
    struct float_format_t

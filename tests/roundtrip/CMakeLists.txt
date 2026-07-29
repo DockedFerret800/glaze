@@ -5,7 +5,7 @@ target_sources(
 target_compile_definitions(
     roundtrip_JSON
     PRIVATE GLZ_TEST_FORMAT=glz::JSON)
-target_link_libraries(roundtrip_JSON PRIVATE ut::ut glaze glaze::asio)
+target_link_libraries(roundtrip_JSON PRIVATE ut::ut glaze Boost::boost)
 add_test(NAME roundtrip_JSON COMMAND roundtrip_JSON)
 
 add_executable(roundtrip_BEVE)
@@ -15,5 +15,5 @@ target_sources(
 target_compile_definitions(
     roundtrip_BEVE
     PRIVATE GLZ_TEST_FORMAT=glz::BEVE)
-target_link_libraries(roundtrip_BEVE PRIVATE ut::ut glaze glaze::asio)
+target_link_libraries(roundtrip_BEVE PRIVATE ut::ut glaze Boost::boost)
 add_test(NAME roundtrip_BEVE COMMAND roundtrip_BEVE)

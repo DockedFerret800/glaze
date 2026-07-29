@@ -7,9 +7,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_EXTENSIONS ON)
 include(GNUInstallDirs)
-
 include(options.cmake)
+find_package(Eigen3 REQUIRED)
+
 add_library(glaze)
+target_link_libraries(glaze PRIVATE Eigen3::Eigen)
 set_target_properties(glaze PROPERTIES EXPORT_NAME "cxx_module")
 target_include_directories(
     glaze
@@ -40,6 +42,7 @@ set(GLAZE_MODULE_SOURCES
     ${CMAKE_SOURCE_DIR}/modules/glaze/core/convert_struct.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/core/custom.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/core/custom_meta.ixx
+    ${CMAKE_SOURCE_DIR}/modules/glaze/core/format_str.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/core/istream_buffer.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/core/manage.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/core/meta.ixx
@@ -61,6 +64,7 @@ set(GLAZE_MODULE_SOURCES
     ${CMAKE_SOURCE_DIR}/modules/glaze/core/write_wrappers.ixx # json
     ${CMAKE_SOURCE_DIR}/modules/glaze/json/escape_unicode.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/json/float_format.ixx
+    ${CMAKE_SOURCE_DIR}/modules/glaze/json/generic_fwd.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/json/generic.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/json/invoke.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/json/jmespath.ixx
@@ -211,7 +215,7 @@ set(GLAZE_MODULE_SOURCES
     ${CMAKE_SOURCE_DIR}/modules/glaze/msgpack/skip.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/msgpack/write.ixx # ext (external)
     ${CMAKE_SOURCE_DIR}/modules/glaze/ext/cli_menu.ixx
-    # ${CMAKE_SOURCE_DIR}/modules/glaze/ext/eigen.ixx
+    ${CMAKE_SOURCE_DIR}/modules/glaze/ext/eigen.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/ext/jsonrpc.ixx # compare
     ${CMAKE_SOURCE_DIR}/modules/glaze/compare/compare.ixx
     ${CMAKE_SOURCE_DIR}/modules/glaze/compare/approx.ixx # stencil

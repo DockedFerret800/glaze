@@ -5,5 +5,5 @@ target_compile_definitions(
 target_sources(
     stencil_test
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/stencil_test.cpp)
-target_link_libraries(stencil_test PRIVATE ut::ut glaze glaze::asio)
+target_link_libraries(stencil_test PRIVATE ut::ut glaze Boost::boost)
 add_test(NAME stencil_test COMMAND stencil_test)

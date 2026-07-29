@@ -7,5 +7,5 @@ target_compile_definitions(
     PRIVATE GLZ_TEST_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(
     toml_test
-    PRIVATE ut::ut glaze glaze::asio)
+    PRIVATE ut::ut glaze Boost::boost)
 add_test(NAME toml_test COMMAND toml_test)

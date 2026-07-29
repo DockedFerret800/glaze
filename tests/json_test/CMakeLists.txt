@@ -5,7 +5,7 @@ target_sources(
     FILE_SET SOURCES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_test.cpp
     FILE_SET
         CXX_MODULES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_test_shared_types.ixx)
-target_link_libraries(json_test PRIVATE ut::ut glaze glaze::asio)
+target_link_libraries(json_test PRIVATE ut::ut glaze Boost::boost)
 if(glaze_ENABLE_REFLECTION26)
     target_compile_definitions(json_test PRIVATE GLZ_REFLECTION26)
 else()
@@ -21,7 +21,7 @@ target_sources(
     FILE_SET
         CXX_MODULES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_test_shared_types.ixx)
 target_compile_definitions(json_test_non_null PRIVATE GLZ_NULL_TERMINATED=false)
-target_link_libraries(json_test_non_null PRIVATE ut::ut glaze glaze::asio)
+target_link_libraries(json_test_non_null PRIVATE ut::ut glaze Boost::boost)
 if(glaze_ENABLE_REFLECTION26)
     target_compile_definitions(json_test_non_null PRIVATE GLZ_REFLECTION26)
 else()
@@ -39,7 +39,7 @@ add_test(NAME json_test_non_null COMMAND json_test_non_null)
 #         CXX_MODULES FILES ${CMAKE_CURRENT_SOURCE_DIR}/json_test_shared_types.ixx)
 # target_link_libraries(
 #     json_variant_support_test
-#     PRIVATE ut::ut glaze glaze::asio)
+#     PRIVATE ut::ut glaze Boost::boost)
 # add_test(NAME json_variant_support_test COMMAND json_variant_support_test)
 
 # add_executable(json_variant_support_test_non_null)
@@ -55,7 +55,7 @@ add_test(NAME json_test_non_null COMMAND json_test_non_null)
 #     PRIVATE GLZ_NULL_TERMINATED=false)
 # target_link_libraries(
 #     json_variant_support_test_non_null
-#     PRIVATE ut::ut glaze glaze::asio)
+#     PRIVATE ut::ut glaze Boost::boost)
 # if(glaze_ENABLE_REFLECTION26)
 #     target_compile_definitions(
 #         json_variant_support_test_non_null
@@ -100,6 +100,6 @@ add_test(NAME json_test_non_null COMMAND json_test_non_null)
 #         FILE_SET
 #             CXX_MODULES FILES
 #             ${CMAKE_CURRENT_SOURCE_DIR}/json_test_shared_types.ixx)
-#     target_link_libraries(${target} PRIVATE ut::ut glaze glaze::asio)
+#     target_link_libraries(${target} PRIVATE ut::ut glaze Boost::boost)
 #     add_test(NAME ${target} COMMAND ${target})
 # endforeach()

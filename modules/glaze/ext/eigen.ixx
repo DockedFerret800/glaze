@@ -1,3 +1,6 @@
+module;
+#include <Eigen/Core>
+
 // Glaze Library
 // For the license information refer to glaze.ixx
 // glz:header path="glaze/ext/eigen.hpp"
@@ -16,12 +19,20 @@ import glaze.api.std.array;
 
 import glaze.beve.read;
 import glaze.beve.write;
+import glaze.beve.header;
 
-import cbor;
+import glaze.cbor.header;
+import glaze.cbor.cbor_to_json;
+import glaze.cbor.read;
+import glaze.cbor.skip;
+import glaze.cbor.wrappers;
+import glaze.cbor.write;
 
 import glaze.core.common;
 import glaze.core.meta;
 import glaze.core.context;
+import glaze.core.opts;
+import glaze.core.traits;
 
 import glaze.json.json_ptr;
 import glaze.json.read;
@@ -30,7 +41,7 @@ import glaze.json.write;
 import glaze.concepts.container_concepts;
 
 import glaze.util.dump;
-
+import glaze.util.string_literal;
 using std::uint8_t;
 using std::uint64_t;
 
@@ -257,13 +268,23 @@ namespace glz
          if (bool(ctx.error)) [[unlikely]]
             return;
 
-         // Resize if dynamic
+         // Resize dynamic matrices to the wire dimensions. A fixed-size matrix has exactly
+         // RowsAtCompileTime * ColsAtCompileTime scalars of storage, so a larger wire dimension
+         // would make the typed-array read below write past that fixed buffer; require the wire
+         // dimensions to match the compile-time extents.
          if constexpr (EigenType::RowsAtCompileTime < 0 || EigenType::ColsAtCompileTime < 0) {
             value.resize(static_cast<Eigen::Index>(rows), static_cast<Eigen::Index>(cols));
          }
+         else {
+            if (static_cast<Eigen::Index>(rows) != value.rows() || static_cast<Eigen::Index>(cols) != value.cols())
+               [[unlikely]] {
+               ctx.error = error_code::syntax_error;
+               return;
+            }
+         }
 
-         // Read data as typed array
-         std::span<Scalar> view(value.data(), rows * cols);
+         // Read data as typed array, bounded by the matrix's own storage
+         std::span<Scalar> view(value.data(), static_cast<size_t>(value.size()));
          parse<CBOR>::op<Opts>(view, ctx, it, end);
       }
    };

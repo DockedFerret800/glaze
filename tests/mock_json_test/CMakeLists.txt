@@ -5,5 +5,5 @@ target_sources(
 target_compile_definitions(
     mock_json_test
     PRIVATE GLZ_TEST_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(mock_json_test PRIVATE ut::ut glaze glaze::asio)
+target_link_libraries(mock_json_test PRIVATE ut::ut glaze Boost::boost)
 add_test(NAME mock_json_test COMMAND mock_json_test)

@@ -244,9 +244,16 @@ namespace glz
    concept basic_string_t =
       is_specialization_v<std::decay_t<T>, std::basic_string> && sizeof(typename std::decay_t<T>::value_type) == 1;
 
+   export template <class>
+   struct is_array_char : std::false_type
+   {};
+
+   export template <size_t N>
+   struct is_array_char<std::array<char, N>> : std::true_type
+   {};
+
    export template <class T>
-   concept array_char_t =
-      requires { std::tuple_size<T>::value; } && std::same_as<T, std::array<char, std::tuple_size_v<T>>>;
+   concept array_char_t = is_array_char<std::remove_cvref_t<T>>::value;
 
    // Concept for char8_t-based string types (std::u8string, std::u8string_view)
    export template <class T>
@@ -697,7 +704,10 @@ namespace glz
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-braces"
 #endif
-   export constexpr auto array(auto&&... args) noexcept { return detail::Array{glz::tuple{conv_sv(args)...}}; }
+   export constexpr auto array(auto&&... args) noexcept
+   {
+      return detail::Array{glz::tuple{conv_sv(args)...}};
+   }
 
    export template <class... Args>
    constexpr auto object(Args&&... args) noexcept
@@ -705,9 +715,15 @@ namespace glz
       return detail::Object{tuple{std::forward<Args>(args)...}};
    }
 
-   export constexpr auto enumerate(auto&&... args) noexcept { return detail::Enum{tuple{args...}}; }
+   export constexpr auto enumerate(auto&&... args) noexcept
+   {
+      return detail::Enum{tuple{args...}};
+   }
 
-   export constexpr auto flags(auto&&... args) noexcept { return detail::Flags{tuple{args...}}; }
+   export constexpr auto flags(auto&&... args) noexcept
+   {
+      return detail::Flags{tuple{args...}};
+   }
 
 #if defined(__clang__)
 #pragma clang diagnostic pop
