@@ -1,11 +1,18 @@
 // Glaze Library
-// For the license information refer to glaze.hpp
+// For the license information refer to glaze.ixx
+// glz:header path="glaze/rpc/repe/repe_to_jsonrpc.hpp"
+// glz:header std=<cstdint>
+// glz:header std=<functional>
+// glz:header std=<string>
+// glz:header std=<string_view>
+// glz:header std=<variant>
+export module glaze.rpc.repe.repe_to_jsonrpc;
 
-#pragma once
+import std;
 
-#include "glaze/ext/jsonrpc.hpp"
-#include "glaze/glaze.hpp"
-#include "glaze/rpc/repe/header.hpp"
+import glaze;
+import glaze.ext.jsonrpc;
+import glaze.rpc.repe.header;
 
 using std::int64_t;
 using std::uint64_t;

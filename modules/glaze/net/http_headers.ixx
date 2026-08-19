@@ -1,17 +1,14 @@
 // Glaze Library
-// For the license information refer to glaze.hpp
-
-#pragma once
-
-#include <algorithm>
-#include <optional>
-#include <ranges>
-#include <string>
-#include <string_view>
-#include <vector>
-
+// For the license information refer to glaze.ixx
+module;
 #include "glaze/util/attributes.hpp"
-#include "glaze/util/compare.hpp"
+export module glaze.net.http_headers;
+
+import std;
+
+import glaze.util.compare;
+
+using std::size_t;
 
 namespace glz
 {
@@ -67,7 +64,7 @@ namespace glz
         public:
          using iterator_concept = std::forward_iterator_tag;
          using iterator_category = std::forward_iterator_tag;
-         using difference_type = ptrdiff_t;
+         using difference_type = std::ptrdiff_t;
          using value_type = http_headers::value_type;
          using reference = std::conditional_t<IsConst, const value_type&, value_type&>;
          using pointer = std::conditional_t<IsConst, const value_type*, value_type*>;

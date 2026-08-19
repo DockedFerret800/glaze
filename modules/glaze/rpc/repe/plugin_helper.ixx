@@ -1,21 +1,30 @@
 // Glaze Library
-// For the license information refer to glaze.hpp
+// For the license information refer to glaze.ixx
+// glz:header path="glaze/rpc/repe/plugin_helper.hpp"
+// glz:header std=<cstddef>
+// glz:header std=<cstdint>
+// glz:header std=<span>
+// glz:header std=<string>
+// glz:header std=<string_view>
 
 // C++ helper for implementing REPE plugins
 // Provides common functionality to reduce code duplication
+module;
 
-#pragma once
-
-#include <span>
-#include <string>
-
-#include "glaze/rpc/registry.hpp"
-#include "glaze/rpc/repe/buffer.hpp"
-#include "glaze/rpc/repe/header.hpp"
 #include "glaze/rpc/repe/plugin.h"
 
-using std::uint64_t;
+export module glaze.rpc.repe.plugin_helper;
+
+import std;
+
+import glaze.rpc.repe.header;
+import glaze.rpc.registry;
+import glaze.rpc.repe.buffer;
+
+import glaze.core.context;
+
 using std::size_t;
+using std::uint64_t;
 
 namespace glz::repe
 {

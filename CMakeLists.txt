@@ -65,6 +65,10 @@ target_include_directories(
       "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/modules>"
 )
 
+include(cmake/glaze-asio.cmake)
+glaze_setup_asio()
+target_link_libraries(glaze_glaze PRIVATE "$<BUILD_INTERFACE:glaze::asio>")
+
 include(cmake/modules-files.cmake)
 
 option(glaze_INSTALL "Generate installation rules for glaze" "${PROJECT_IS_TOP_LEVEL}")

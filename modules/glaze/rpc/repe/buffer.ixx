@@ -1,22 +1,36 @@
 // Glaze Library
-// For the license information refer to glaze.hpp
-
-#pragma once
-
+// For the license information refer to glaze.ixx
+// glz:header path="glaze/rpc/repe/buffer.hpp"
+// glz:header std=<cstddef>
+// glz:header std=<cstdint>
+// glz:header std=<cstring>
+// glz:header std=<limits>
+// glz:header std=<optional>
+// glz:header std=<span>
+// glz:header std=<string>
+// glz:header std=<string_view>
+// glz:header std=<utility>
+module;
 #include <cstddef>
-#include <cstring>
-#include <optional>
-#include <span>
 
-#include "glaze/core/reflect.hpp"
-#include "glaze/json/read.hpp"
-#include "glaze/rpc/repe/header.hpp"
+export module glaze.rpc.repe.buffer;
 
-using std::uint8_t;
+import std;
+
+import glaze.rpc.repe.header;
+
+import glaze.core.read;
+import glaze.core.reflect;
+import glaze.core.context;
+import glaze.core.opts;
+
+import glaze.json.read;
+
+using std::size_t;
 using std::uint16_t;
 using std::uint32_t;
 using std::uint64_t;
-using std::size_t;
+using std::uint8_t;
 
 namespace glz::repe
 {
@@ -37,13 +51,13 @@ namespace glz::repe
    // Error encoding/decoding
    // ============================================================
 
-   inline void encode_error(const error_code ec, message& msg)
+   export inline void encode_error(const error_code ec, message& msg)
    {
       msg.header.ec = ec;
       msg.body.clear();
    }
 
-   template <class ErrorMessage>
+   export template <class ErrorMessage>
       requires(requires(ErrorMessage m) { m.size(); })
    inline void encode_error(const error_code ec, message& msg, ErrorMessage&& error_message)
    {
@@ -59,7 +73,7 @@ namespace glz::repe
       msg.body = error_message;
    }
 
-   template <class ErrorMessage>
+   export template <class ErrorMessage>
       requires(not requires(ErrorMessage m) { m.size(); })
    inline void encode_error(const error_code ec, message& msg, ErrorMessage&& error_message)
    {
@@ -274,7 +288,7 @@ namespace glz::repe
    /// Extract message ID without full deserialization
    /// @param data Span of raw message bytes
    /// @return The message ID, or 0 if data is too small
-   inline uint64_t extract_id(std::span<const char> data) noexcept
+   export inline uint64_t extract_id(std::span<const char> data) noexcept
    {
       if (data.size() < sizeof(header)) return 0;
       uint64_t id{};
@@ -304,7 +318,7 @@ namespace glz::repe
    /// @param buffer Output buffer (will be resized)
    /// @param error_message The error message text
    /// @param id Optional message ID to include in response
-   template <class ErrorMessage>
+   export template <class ErrorMessage>
    inline void encode_error_buffer(error_code ec, std::string& buffer, ErrorMessage&& error_message, uint64_t id = 0)
    {
       header hdr{};
@@ -338,4 +352,3 @@ namespace glz::repe
       return buffer;
    }
 }
-

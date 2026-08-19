@@ -1,40 +1,30 @@
 // Glaze Library
-// For the license information refer to glaze.hpp
-
-#pragma once
-
-#include <atomic>
-#include <chrono>
-#include <concepts>
-#include <cstdlib>
-#include <expected>
-#include <functional>
-#include <future>
-#include <glaze/glaze.hpp>
-#include <iostream>
-#include <limits>
-#include <memory>
-#include <mutex>
-#include <optional>
-#include <shared_mutex>
-#include <source_location>
-#include <thread>
-#include <unordered_map>
-#include <vector>
-
-#include "glaze/ext/glaze_asio.hpp"
-#include "glaze/net/http_router.hpp"
-#include "glaze/util/env.hpp"
-#include "glaze/util/itoa.hpp"
-#include "glaze/util/key_transformers.hpp"
+// For the license information refer to glaze.ixx
+module;
+#include "glaze/ext/asio_include.hpp"
 
 #ifdef GLZ_ENABLE_SSL
 #include <openssl/ssl.h> // For SSL_set_tlsext_host_name
 #endif
+export module glaze.net.http_client;
+
+import std;
+
+import glaze.net.http;
+import glaze.net.http_router;
+
+import glaze.json.write;
+
+import glaze.util.env;
+import glaze.util.itoa;
+import glaze.util.key_transformers;
+
+using std::size_t;
+using std::uint16_t;
 
 namespace glz
 {
-   inline int strncasecmp(const char* s1, const char* s2, size_t n)
+   export inline int strncasecmp(const char* s1, const char* s2, size_t n)
    {
       for (size_t i = 0; i < n; ++i) {
          unsigned char c1 = static_cast<unsigned char>(s1[i]);
@@ -56,7 +46,7 @@ namespace glz
       immediate_delivery // Deliver smaller chunks immediately, lower latency
    };
 
-   struct url_parts
+   export struct url_parts
    {
       std::string protocol;
       std::string host;
@@ -74,7 +64,7 @@ namespace glz
 #endif
 
    // SSL error codes for detailed error reporting
-   enum class ssl_error {
+   export enum class ssl_error {
       success = 0,
       ssl_not_supported, // HTTPS requested but SSL support not compiled in
       sni_hostname_failed // Failed to set SNI hostname (SSL_set_tlsext_host_name)
@@ -124,7 +114,7 @@ namespace glz
    }
 
    // Create std::error_code from ssl_error
-   inline std::error_code make_error_code(ssl_error e) noexcept
+   export inline std::error_code make_error_code(ssl_error e) noexcept
    {
       return {static_cast<int>(e), get_ssl_error_category()};
    }
@@ -303,7 +293,7 @@ namespace glz
 
 #ifdef GLZ_ENABLE_SSL
       // Configure SNI and hostname verification for client TLS connections.
-      inline bool configure_ssl_client_hostname(ssl_socket& sock, const std::string& host)
+      export inline bool configure_ssl_client_hostname(ssl_socket& sock, const std::string& host)
       {
          if (!SSL_set_tlsext_host_name(sock.native_handle(), host.c_str())) {
             return false;
@@ -423,7 +413,7 @@ namespace glz
       }
    }
 
-   inline std::expected<url_parts, std::error_code> parse_url(std::string_view url)
+   export inline std::expected<url_parts, std::error_code> parse_url(std::string_view url)
    {
       // Check minimum length
       if (url.size() < 8) { // Minimum for "http://" + 1 char host
@@ -2782,4 +2772,3 @@ namespace glz
       }
    };
 }
-
