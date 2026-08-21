@@ -45,6 +45,11 @@ struct glz::meta<my_struct>
    );
 };
 
+// Relative scratch paths in this file resolve inside a private directory rather than
+// wherever the binary was launched from. This must precede the first suite: ut runs a
+// suite from its constructor, during static initialization.
+const glz_test::scratch_directory scratch{"exceptions_test"};
+
 suite starter = [] {
    "example"_test = [] {
       my_struct s{};

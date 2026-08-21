@@ -563,18 +563,6 @@ namespace glz
          return is_valid_hostname(uri_host);
       }
 
-      inline bool is_tchar(char ch) noexcept
-      {
-         // RFC 9110, Section 5.6.2:
-         // token = 1*tchar
-         // tchar = "!" / "#" / "$" / "%" / "&" / "'" / "*"
-         //       / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
-         //       / DIGIT / ALPHA
-         return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '!' ||
-                ch == '#' || ch == '$' || ch == '%' || ch == '&' || ch == '\'' || ch == '*' || ch == '+' || ch == '-' ||
-                ch == '.' || ch == '^' || ch == '_' || ch == '`' || ch == '|' || ch == '~';
-      }
-
       inline bool is_pct_encoded(std::string_view str) noexcept
       {
          // RFC 3986, Appendix A:
@@ -938,6 +926,60 @@ namespace glz
       }
    }
 
+   // Interface for streaming connections (type-erased for HTTP/HTTPS compatibility)
+   struct streaming_connection_interface
+   {
+      using data_sent_handler = std::function<void(std::error_code)>;
+      using disconnect_handler = std::function<void()>;
+
+      virtual ~streaming_connection_interface() = default;
+
+      // Send initial headers for streaming response
+      virtual void send_headers(int status_code, const glz::http_headers& headers = {},
+                                data_sent_handler handler = {}) = 0;
+
+      // Send a chunk of data
+      virtual void send_chunk(std::string_view data, data_sent_handler handler = {}) = 0;
+
+      // Send Server-Sent Event
+      virtual void send_event(std::string_view event_type, std::string_view data, std::string_view id = {},
+                              data_sent_handler handler = {}) = 0;
+
+      // Close the streaming connection
+      virtual void close(disconnect_handler handler = {}) = 0;
+
+      // Set disconnect handler for client disconnection
+      virtual void on_disconnect(disconnect_handler handler) = 0;
+
+      // Check if connection is still alive
+      virtual bool is_open() const = 0;
+
+      // Get remote endpoint info
+      virtual std::string remote_address() const = 0;
+      virtual uint16_t remote_port() const = 0;
+
+      // Check if headers have been sent
+      virtual bool is_headers_sent() const = 0;
+
+      // Get executor for async operations (timers, etc.)
+      virtual asio::any_io_executor get_executor() const = 0;
+
+      // Send JSON as Server-Sent Event (convenience method using send_event)
+      template <class T>
+      void send_json_event(const T& data, std::string_view event_type = "message", std::string_view id = {},
+                           data_sent_handler handler = {})
+      {
+         std::string json_str;
+         auto ec = glz::write_json(data, json_str);
+         if (!ec) {
+            send_event(event_type, json_str, id, handler);
+         }
+         else if (handler) {
+            handler(std::make_error_code(std::errc::invalid_argument));
+         }
+      }
+   };
+
    // Streaming connection handle for server-side streaming
    template <typename SocketType = asio::ip::tcp::socket>
    struct streaming_connection : public streaming_connection_interface,
@@ -951,8 +993,7 @@ namespace glz
       {}
 
       // Send initial headers for streaming response
-      void send_headers(int status_code, const std::unordered_map<std::string, std::string>& headers = {},
-                        data_sent_handler handler = {}) override
+      void send_headers(int status_code, const glz::http_headers& headers = {}, data_sent_handler handler = {}) override
       {
          if (is_headers_sent_) return;
          is_headers_sent_ = true;
@@ -982,9 +1023,10 @@ namespace glz
          // dropped Transfer-Encoding/Connection would otherwise leave the stream
          // unframed (no chunked framing, no keep-alive signal). Treat a
          // present-but-invalid header as absent, matching what was written.
-         const auto present_and_valid = [&](const char* key) {
-            const auto it = headers.find(key);
-            return it != headers.end() && !header_field_has_crlf(it->first, it->second);
+         const auto present_and_valid = [&](std::string_view key) {
+            return std::ranges::any_of(headers.fields(key), [](const http_header& field) {
+               return !header_field_has_crlf(field.name, field.value);
+            });
          };
 
          if (!present_and_valid("transfer-encoding")) {
@@ -1217,6 +1259,74 @@ namespace glz
          }
       }
    };
+
+   // Enhanced response class with streaming support
+   struct streaming_response
+   {
+      std::shared_ptr<streaming_connection_interface> stream;
+
+      streaming_response(std::shared_ptr<streaming_connection_interface> conn) : stream(std::move(conn)) {}
+
+      // Send headers and start streaming
+      streaming_response& start_stream(int status_code = 200, const glz::http_headers& headers = {})
+      {
+         if (stream) {
+            stream->send_headers(status_code, headers);
+         }
+         return *this;
+      }
+
+      // Send a chunk of data
+      streaming_response& send(std::string_view data)
+      {
+         if (stream) {
+            stream->send_chunk(data);
+         }
+         return *this;
+      }
+
+      // Send JSON data
+      template <class T>
+      streaming_response& send_json(const T& data)
+      {
+         if (stream) {
+            std::string json_str;
+            auto ec = glz::write_json(data, json_str);
+            if (!ec) {
+               stream->send_chunk(json_str);
+            }
+         }
+         return *this;
+      }
+
+      // Send Server-Sent Event
+      streaming_response& send_event(std::string_view event_type, std::string_view data, std::string_view id = {})
+      {
+         if (stream) {
+            stream->send_event(event_type, data, id);
+         }
+         return *this;
+      }
+
+      // Helper for SSE setup
+      streaming_response& as_event_stream()
+      {
+         return start_stream(200, {{"Content-Type", "text/event-stream"},
+                                   {"Cache-Control", "no-cache"},
+                                   {"Access-Control-Allow-Origin", "*"}});
+      }
+
+      // Close the stream
+      void close()
+      {
+         if (stream) {
+            stream->close();
+         }
+      }
+   };
+
+   // streaming_handler is declared in glaze/net/http_router.hpp so the router can
+   // store streaming routes uniformly with normal routes.
 
    // Wrapping middleware types
    // Non-copyable, non-movable wrapper to enforce synchronous execution
@@ -2429,7 +2539,7 @@ namespace glz
          std::string_view data(conn->read_buf.data(), conn->buf_len);
          parse_result result;
 
-         // Clear headers for re-parse safety (preserves bucket allocation)
+         // Clear headers for re-parse safety (preserves capacity)
          conn->request_.headers.clear();
 
          // --- Parse request line ---
@@ -2505,16 +2615,6 @@ namespace glz
             auto colon_pos = line.find(':');
             if (colon_pos != std::string_view::npos) {
                std::string_view name_sv = line.substr(0, colon_pos);
-               // RFC 7230 3.2.4: no whitespace is allowed between the field-name and
-               // the colon. Tolerating it would store the name under a key with a
-               // trailing space/tab (e.g. "transfer-encoding ") that header lookups
-               // miss, so an obfuscated "Transfer-Encoding : chunked" would desync body
-               // framing (request smuggling). Reject with 400 and close.
-               if (!name_sv.empty() && (name_sv.back() == ' ' || name_sv.back() == '\t')) {
-                  result.status = parse_status::error;
-                  send_error_response_with_close(conn, 400, "Bad Request");
-                  return result;
-               }
                std::string_view value_sv = line.substr(colon_pos + 1);
                value_sv.remove_prefix((std::min)(value_sv.find_first_not_of(" \t"), value_sv.size()));
                // RFC 9110 §5.5 / RFC 9112 §5: a field value excludes trailing OWS as well;
@@ -2524,15 +2624,30 @@ namespace glz
                if (const auto last = value_sv.find_last_not_of(" \t"); last != std::string_view::npos) {
                   value_sv.remove_suffix(value_sv.size() - (last + 1));
                }
-               std::string key(name_sv);
-               for (auto& c : key) c = ascii_tolower(c);
+               // RFC 9112 2.2 / RFC 7230 3.2: the field-name must be a token and the
+               // field-value must carry no bare CR/LF or other control byte. Splitting
+               // on CRLF alone leaves a bare LF inside a field line intact, so glaze reads
+               // "X: 1\nContent-Length: 40" as one X field while an LF-tolerant proxy reads
+               // two fields and frames those bytes as the body: the Content-Length lookup
+               // here misses and the trailing bytes reparse as a second request (CL.0
+               // request smuggling). The token rule also forbids whitespace before the
+               // colon (RFC 7230 3.2.4): tolerating it would store the name under a key
+               // with a trailing space/tab that header lookups miss, so an obfuscated
+               // "Transfer-Encoding : chunked" would desync body framing the same way.
+               // Validate with the net stack's shared predicates, which the WebSocket
+               // handshake path already uses, and reject with 400 and close.
+               if (!glz::valid_header_name(name_sv) || !glz::valid_header_value(value_sv)) {
+                  result.status = parse_status::error;
+                  send_error_response_with_close(conn, 400, "Bad Request");
+                  return result;
+               }
                // RFC 7230 3.3.2: multiple Content-Length fields with differing values make the
-               // body framing unrecoverable. The header map keeps last-wins, so a second
-               // Content-Length would silently override the first; a proxy that frames the body
-               // by the first value then desyncs from this server (CL.CL request smuggling).
+               // body framing unrecoverable. Lookups resolve to the first field, so a second
+               // Content-Length carrying another length would leave a proxy that frames the body
+               // by the later value desynced from this server (CL.CL request smuggling).
                // Reject with 400 and close. Identical repeats are tolerated.
-               if (key == "content-length") {
-                  if (auto existing = headers.find(key); existing != headers.end() && existing->second != value_sv) {
+               if (glz::striequal(name_sv, "content-length")) {
+                  if (auto existing = headers.find(name_sv); existing != headers.end() && existing->value != value_sv) {
                      result.status = parse_status::error;
                      send_error_response_with_close(conn, 400, "Bad Request");
                      return result;
@@ -2540,7 +2655,7 @@ namespace glz
                }
 
                // Duplicate or invalid Host fields are errors for any HTTP/1.x request
-               if (key == "host") {
+               if (glz::striequal(name_sv, "host")) {
                   if (host_header_parsed || !detail::is_valid_authority(value_sv)) {
                      result.status = parse_status::error;
                      send_error_response_with_close(conn, 400, "Bad Request");
@@ -2549,7 +2664,7 @@ namespace glz
                   host_header_parsed = true;
                }
 
-               headers[std::move(key)] = std::string(value_sv);
+               headers.add(std::string(name_sv), std::string(value_sv));
             }
 
             pos = line_end + 2;
@@ -2577,14 +2692,14 @@ namespace glz
          // keep-alive loop parses it as a second, smuggled request (TE/CL desync).
          // RFC 7230 3.3.1 requires answering an undecodable Transfer-Encoding with
          // 501 and closing the connection.
-         if (headers.find("transfer-encoding") != headers.end()) {
+         if (headers.contains("transfer-encoding")) {
             send_error_response_with_close(conn, 501, "Not Implemented");
             return;
          }
 
          std::size_t content_length = 0;
          if (auto it = headers.find("content-length"); it != headers.end()) {
-            const auto& cl = it->second;
+            const auto& cl = it->value;
             auto [ptr, ec] = std::from_chars(cl.data(), cl.data() + cl.size(), content_length);
             if (ec != std::errc{} || ptr != cl.data() + cl.size()) {
                send_error_response_with_close(conn, 400, "Bad Request");
@@ -2632,19 +2747,7 @@ namespace glz
          }
       }
 
-      // Case-insensitive substring search
-      static bool ci_contains(std::string_view haystack, std::string_view needle)
-      {
-         if (needle.size() > haystack.size()) return false;
-         for (size_t i = 0; i <= haystack.size() - needle.size(); ++i) {
-            if (glz::striequal(haystack.substr(i, needle.size()), needle)) {
-               return true;
-            }
-         }
-         return false;
-      }
-
-      inline bool determine_keep_alive(const std::unordered_map<std::string, std::string>& headers, bool is_http_11,
+      inline bool determine_keep_alive(const glz::http_headers& headers, bool is_http_11,
                                        std::shared_ptr<connection_state> conn)
       {
          // If server has keep-alive disabled, always close
@@ -2658,15 +2761,11 @@ namespace glz
             return false;
          }
 
-         // Check client's Connection header (case-insensitive)
-         auto conn_header_it = headers.find("connection");
-         if (conn_header_it != headers.end()) {
-            if (ci_contains(conn_header_it->second, "close")) {
-               return false;
-            }
-            if (ci_contains(conn_header_it->second, "keep-alive")) {
-               return true;
-            }
+         if (headers.contains_token("connection", "close")) {
+            return false;
+         }
+         if (headers.contains_token("connection", "keep-alive")) {
+            return true;
          }
 
          // Default behavior based on HTTP version
@@ -2765,7 +2864,7 @@ namespace glz
                   if (auto request_method_it = request.headers.find("access-control-request-method");
                       request_method_it != request.headers.end()) {
                      has_request_method_header = true;
-                     std::string method_token{request_method_it->second};
+                     std::string method_token{request_method_it->value};
                      auto trim_pos = method_token.find_last_not_of(" \t\r\n");
                      if (trim_pos != std::string::npos) {
                         method_token.erase(trim_pos + 1);
@@ -2940,6 +3039,19 @@ namespace glz
             if (header_field_has_crlf(name, value)) [[unlikely]] {
                continue;
             }
+            // This writer sends a complete, already-buffered body and frames it with
+            // the Content-Length below, so it never applies a transfer coding. A
+            // handler-set Transfer-Encoding would announce a framing the bytes do not
+            // follow: a recipient told "chunked" reads the body's first line as a
+            // chunk size, and alongside the Content-Length it is the two-framings
+            // shape behind response smuggling (RFC 9112 6.3). There is no value worth
+            // keeping - the field describes an encoding only this writer could have
+            // applied - so drop it rather than emit a self-contradicting response.
+            // Streaming responses declare their own through
+            // streaming_connection::send_headers, which does chunk what it sends.
+            if (glz::striequal(name, "transfer-encoding")) [[unlikely]] {
+               continue;
+            }
             h.append(name);
             h.append(": ");
             h.append(value);
@@ -3047,16 +3159,9 @@ namespace glz
          send_error_response_with_conn(conn, status_code, message);
       }
 
-      inline bool is_websocket_upgrade(const std::unordered_map<std::string, std::string>& headers)
+      inline bool is_websocket_upgrade(const glz::http_headers& headers)
       {
-         auto upgrade_it = headers.find("upgrade");
-         if (upgrade_it == headers.end()) return false;
-
-         auto connection_it = headers.find("connection");
-         if (connection_it == headers.end()) return false;
-
-         if (!ci_contains(upgrade_it->second, "websocket")) return false;
-         return ci_contains(connection_it->second, "upgrade");
+         return headers.contains_token("upgrade", "websocket") && headers.contains_token("connection", "upgrade");
       }
 
       inline void handle_websocket_upgrade_with_conn(std::shared_ptr<connection_state> conn)

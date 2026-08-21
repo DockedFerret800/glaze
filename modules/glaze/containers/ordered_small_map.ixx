@@ -977,6 +977,24 @@ namespace glz
          return it->second;
       }
 
+#if GLZ_HAS_OPTIONAL_REF
+      template <class K>
+      std::optional<mapped_type&> lookup(const K& key)
+      {
+         auto it = find(key);
+         if (it == end()) return std::nullopt;
+         return it->second;
+      }
+
+      template <class K>
+      std::optional<const mapped_type&> lookup(const K& key) const
+      {
+         auto it = find(key);
+         if (it == end()) return std::nullopt;
+         return it->second;
+      }
+#endif
+
       // Direct access to underlying data
       value_type* data() noexcept { return data_; }
       const value_type* data() const noexcept { return data_; }
