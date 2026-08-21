@@ -19,6 +19,7 @@ import glaze.rpc.repe;
 
 import glaze.core.common;
 import glaze.core.opts;
+import glaze.core.read;
 import glaze.core.reflect;
 import glaze.rpc.repe.header;
 
@@ -316,7 +317,7 @@ namespace glz
       }
    };
 
-   template <auto Opts = opts{}>
+   export template <auto Opts = opts{}>
    struct asio_client
    {
       std::string host{"localhost"}; // host name
@@ -581,7 +582,7 @@ namespace glz
       }
    };
 
-   template <auto Opts = opts{}>
+   export template <auto Opts = opts{}>
    struct asio_server
    {
       uint16_t port{}; // 0 will select a random free port

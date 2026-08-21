@@ -177,7 +177,7 @@ namespace glz
     *
     * Defines validation rules for route parameters using a validation function.
     */
-   struct param_constraint
+   export struct param_constraint
    {
       /**
        * @brief Human-readable description of the constraint

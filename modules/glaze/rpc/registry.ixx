@@ -31,6 +31,8 @@ import glaze.rpc.repe.header;
 import glaze.rpc.repe;
 import glaze.rpc.repe.repe_registry_impl;
 
+import glaze.reflection.to_tuple;
+
 import glaze.tuplet;
 
 import glaze.util.itoa;

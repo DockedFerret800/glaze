@@ -195,7 +195,7 @@ namespace glz
       };
    } // namespace detail
 
-   inline const std::error_category& http_status_category()
+   export inline const std::error_category& http_status_category()
    {
       static detail::http_status_category_impl instance;
       return instance;
@@ -206,7 +206,7 @@ namespace glz
       return {status_code, http_status_category()};
    }
 
-   inline std::optional<int> http_status_from(std::error_code ec)
+   export inline std::optional<int> http_status_from(std::error_code ec)
    {
       if (ec.category() == http_status_category()) {
          return ec.value();

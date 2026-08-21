@@ -41,7 +41,7 @@ namespace glz
    }
 
    // Streaming strategy options
-   enum class stream_read_strategy {
+   export enum class stream_read_strategy {
       bulk_transfer, // Deliver larger chunks, better throughput (default)
       immediate_delivery // Deliver smaller chunks immediately, lower latency
    };
@@ -249,7 +249,7 @@ namespace glz
       // buffer once, so the async chain (and retry) can share it without re-copying the
       // body or re-iterating the headers map. For large idempotent PUT bodies this is
       // the difference between O(1) and O(N) body copies per request through the chain.
-      inline std::string build_http_request_bytes(const std::string& method, const url_parts& url, bool use_https,
+      export inline std::string build_http_request_bytes(const std::string& method, const url_parts& url, bool use_https,
                                                   const std::string& body,
                                                   const std::unordered_map<std::string, std::string>& headers)
       {
@@ -303,7 +303,7 @@ namespace glz
          return true;
       }
 
-      enum class ssl_ca_source { explicit_file, env_ssl_cert_file, env_ssl_cert_dir, default_verify_paths };
+      export enum class ssl_ca_source { explicit_file, env_ssl_cert_file, env_ssl_cert_dir, default_verify_paths };
 
       inline std::optional<std::string_view> non_empty_path(std::optional<std::string_view> value)
       {
@@ -335,7 +335,7 @@ namespace glz
          { std::forward<Loader>(loader)() } -> std::convertible_to<std::error_code>;
       };
 
-      template <ssl_ca_path_loader LoadFile, ssl_ca_path_loader LoadDir, ssl_ca_default_loader LoadDefault>
+      export template <ssl_ca_path_loader LoadFile, ssl_ca_path_loader LoadDir, ssl_ca_default_loader LoadDefault>
       inline std::expected<ssl_ca_source, std::error_code> configure_ssl_ca_fallback(
          std::optional<std::string_view> explicit_file, std::optional<std::string_view> env_cert_file,
          std::optional<std::string_view> env_cert_dir, LoadFile&& load_file, LoadDir&& load_dir,
@@ -920,7 +920,7 @@ namespace glz
       ~http_stream_connection() { disconnect(); }
    };
    // deprecated, use stream_request_params_v2 instead
-   struct stream_request_params
+   export struct stream_request_params
    {
       std::string url;
       http_data_handler on_data;
@@ -937,7 +937,7 @@ namespace glz
    };
 
    // Stream request parameters struct
-   struct stream_request_params_v2
+   export struct stream_request_params_v2
    {
       std::string method{"GET"};
       std::string url;
@@ -953,7 +953,7 @@ namespace glz
       std::function<bool(int)> status_is_error{[](int status) { return status >= 400; }};
    };
 
-   struct http_client
+   export struct http_client
    {
       /**
        * @brief Construct an HTTP client

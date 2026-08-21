@@ -78,7 +78,7 @@ namespace glz
     * @param origin The origin to check
     * @return true if the origin is allowed, false otherwise
     */
-   inline bool is_origin_allowed(const cors_config& config, std::string_view origin)
+   export inline bool is_origin_allowed(const cors_config& config, std::string_view origin)
    {
       if (origin.empty()) {
          return false;

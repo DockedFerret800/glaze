@@ -235,8 +235,8 @@ namespace glz::repe
    export template <auto Opts>
    inline constexpr auto request = detail::request_impl<Opts>{};
 
-   inline constexpr auto request_beve = request<opts{BEVE}>;
-   inline constexpr auto request_json = request<opts{JSON}>;
+   export inline constexpr auto request_beve = request<opts{BEVE}>;
+   export inline constexpr auto request_json = request<opts{JSON}>;
 
    // ============================================================
    // View Types (zero-copy for query/body, stack-copy for header)

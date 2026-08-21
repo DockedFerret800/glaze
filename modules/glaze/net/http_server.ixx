@@ -40,7 +40,7 @@ namespace glz
    namespace detail
    {
       // Produces an RFC 7231 §7.1.1.1 IMF-fixdate formatted HTTP date string
-      [[nodiscard]] inline std::string format_http_date(const std::chrono::sys_seconds time)
+      export [[nodiscard]] inline std::string format_http_date(const std::chrono::sys_seconds time)
       {
          static constexpr std::array<std::string_view, 7> weekdays = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
          static constexpr std::array<std::string_view, 12> months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -73,7 +73,7 @@ namespace glz
       inline constexpr bool is_ssl_stream<asio::ssl::stream<T>> = true;
 #endif
 
-      inline bool is_valid_ipv4_address(std::string_view address) noexcept
+      export inline bool is_valid_ipv4_address(std::string_view address) noexcept
       {
          // RFC 3986, Section 3.2.2:
          // A host identified by an IPv4 literal address is represented in
@@ -219,7 +219,7 @@ namespace glz
          return true;
       }
 
-      inline bool is_valid_ipv6_address(std::string_view address) noexcept
+      export inline bool is_valid_ipv6_address(std::string_view address) noexcept
       {
          constexpr size_t min_ipv6_length = 2; // "::"
          constexpr size_t max_ipv6_length = 45; // "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:255.255.255.255"
@@ -471,7 +471,7 @@ namespace glz
       // Deliberately stricter than RFC 3986 authority:
       //  - userinfo is rejected per RFC 9110, Section 4.2.4 (deprecated in http/https URIs)
       //  - IPvFuture literals are rejected by internal policy
-      inline bool is_valid_authority(std::string_view authority) noexcept
+      export inline bool is_valid_authority(std::string_view authority) noexcept
       {
          // RFC 9110, Section 7.2:
          // Host = uri-host [ ":" port ]
@@ -839,7 +839,7 @@ namespace glz
          return false;
       }
 
-      inline std::expected<detail::request_line, int> parse_request_line(std::string_view request_line)
+      export inline std::expected<detail::request_line, int> parse_request_line(std::string_view request_line)
       {
          static constexpr std::string_view http_version_prefix = "HTTP/";
 
@@ -1221,7 +1221,7 @@ namespace glz
    // Wrapping middleware types
    // Non-copyable, non-movable wrapper to enforce synchronous execution
    // This prevents accidental storage and async invocation which would cause dangling references
-   struct next_handler final
+   export struct next_handler final
    {
       explicit next_handler(std::function<void()> fn) : fn_(std::move(fn)) {}
 
@@ -1255,7 +1255,7 @@ namespace glz
     * Controls keep-alive (persistent connection) settings for the HTTP server.
     * HTTP/1.1 defaults to keep-alive; this configuration allows tuning or disabling it.
     */
-   struct connection_config
+   export struct connection_config
    {
       /**
        * @brief Enable HTTP/1.1 persistent connections (keep-alive)
@@ -1298,7 +1298,7 @@ namespace glz
    };
 
    // Server implementation using non-blocking asio with WebSocket support
-   template <bool EnableTLS = false>
+   export template <bool EnableTLS = false>
    struct http_server
    {
       // Socket type abstraction
@@ -3271,5 +3271,5 @@ namespace glz
    } // namespace streaming_utils
 
    // Alias for HTTPS server
-   using https_server = http_server<true>;
+   export using https_server = http_server<true>;
 }

@@ -25,7 +25,7 @@ namespace glz
       }
    } // namespace detail
 
-   struct http_header
+   export struct http_header
    {
       std::string name;
       std::string value;
@@ -48,7 +48,7 @@ namespace glz
       }
    };
 
-   struct http_headers
+   export struct http_headers
    {
       using value_type = glz::http_header;
       using iterator = std::vector<value_type>::iterator;

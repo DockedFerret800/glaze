@@ -287,7 +287,7 @@ namespace glz
    struct websocket_connection;
 
    // Base class for type-erased connection closing
-   struct closeable_connection
+   export struct closeable_connection
    {
       virtual ~closeable_connection() = default;
       virtual void force_close() = 0;
@@ -303,7 +303,7 @@ namespace glz
    //   });
    // Only code that explicitly typed the concrete type or accessed internal members
    // (like socket_) needs to be updated.
-   struct websocket_connection_interface : public closeable_connection
+   export struct websocket_connection_interface : public closeable_connection
    {
       // Send operations
       virtual void send_text(std::string_view message) = 0;
