@@ -7,6 +7,8 @@ export module glaze.net.http_streaming;
 
 import std;
 
+export import glaze.net.http_headers;
+
 import glaze.json.write;
 
 namespace glz
@@ -20,7 +22,7 @@ namespace glz
       virtual ~streaming_connection_interface() = default;
 
       // Send initial headers for streaming response
-      virtual void send_headers(int status_code, const std::unordered_map<std::string, std::string>& headers = {},
+      virtual void send_headers(int status_code, const glz::http_headers& headers = {},
                                 data_sent_handler handler = {}) = 0;
 
       // Send a chunk of data
@@ -73,8 +75,7 @@ namespace glz
       streaming_response(std::shared_ptr<streaming_connection_interface> conn) : stream(std::move(conn)) {}
 
       // Send headers and start streaming
-      streaming_response& start_stream(int status_code = 200,
-                                       const std::unordered_map<std::string, std::string>& headers = {})
+      streaming_response& start_stream(int status_code = 200, const glz::http_headers& headers = {})
       {
          if (stream) {
             stream->send_headers(status_code, headers);

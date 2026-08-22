@@ -1,18 +1,17 @@
 // Glaze Library
-// For the license information refer to glaze.hpp
+// For the license information refer to glaze.ixx
 
-#pragma once
-
-#include <filesystem>
-#include <string>
-#include <string_view>
-#include <system_error>
+module;
 
 #if defined(_WIN32)
 #include <process.h>
 #else
 #include <unistd.h>
 #endif
+
+export module glaze.tests.scratch_directory;
+
+import std;
 
 // Several suites exercise the file APIs by writing scratch files through relative paths, and some of
 // those paths deliberately reach upward ("../file.json") to prove that an include resolves relative
@@ -45,7 +44,7 @@ namespace glz_test
 #endif
    }
 
-   struct scratch_directory final
+   export struct scratch_directory final
    {
       explicit scratch_directory(const std::string_view test_name)
       {

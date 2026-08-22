@@ -9,6 +9,7 @@ import glaze.json.read;
 import glaze.net.http_client;
 import glaze.net.http_router;
 import glaze.net.http_server;
+import glaze.net.ssl;
 import glaze.util.env;
 import glaze.ext.glaze_asio;
 

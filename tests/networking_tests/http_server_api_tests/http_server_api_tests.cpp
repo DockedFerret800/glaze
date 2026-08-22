@@ -14,6 +14,7 @@ import glaze.net.cors;
 import glaze.net.http_client;
 import glaze.net.http_router;
 import glaze.net.http_server;
+import glaze.util.compare;
 
 import ut;
 

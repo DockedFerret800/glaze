@@ -16,8 +16,8 @@ import glaze.core.meta_fwd;
 
 #include "glaze/util/inline.hpp"
 
-using std::uint32_t;
 using std::size_t;
+using std::uint32_t;
 
 namespace glz
 {
@@ -128,7 +128,7 @@ namespace glz
       // -- text a small document can multiply into an unbounded amount -- and both call for the
       // same response, so they share a code; custom_error_message names which one ran away.
       exceeded_max_expansion
-};
+   };
 
    // Unified error context for all read/write operations
    // Provides error information and byte count processed
@@ -222,8 +222,7 @@ namespace glz
    // Charge `consumed` bytes of speculative parsing. Returns false once the budget is spent, at which
    // point the caller must stop trying alternatives. A zero budget means unlimited: a context that
    // never went through glz::read (a nested or hand-rolled parse) is not policed.
-   export [[nodiscard]] GLZ_ALWAYS_INLINE bool charge_speculation(is_context auto& ctx,
-                                                                  const size_t consumed) noexcept
+   export [[nodiscard]] GLZ_ALWAYS_INLINE bool charge_speculation(is_context auto& ctx, const size_t consumed) noexcept
    {
       if constexpr (requires { ctx.speculation_budget; }) {
          if (ctx.speculation_budget == 0) {
@@ -373,8 +372,7 @@ namespace glz
                                        "invalid_utf8",
                                        "invalid_control_character",
                                        "streaming_unsupported",
-                                       "exceeded_max_expansion"
-                                    };
+                                       "exceeded_max_expansion"};
       static constexpr std::array value{none, //
                                         version_mismatch, //
                                         invalid_header, //
@@ -453,12 +451,11 @@ namespace glz
                                         buffer_overflow, //
                                         invalid_length, //
                                         // Encoding errors
-                                        invalid_utf8,  //
+                                        invalid_utf8, //
                                         invalid_control_character, //
                                         // Streaming errors
                                         streaming_unsupported, //
                                         // Expansion errors
-                                        exceeded_max_expansion}
-                                        };
+                                        exceeded_max_expansion};
    };
 }

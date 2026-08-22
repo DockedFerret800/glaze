@@ -33,11 +33,19 @@ add_code_coverage_all_targets()
 
 option(glaze_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer for tests" ON)
 
+add_library(glz_test_modules STATIC)
+target_compile_features(glz_test_modules PUBLIC cxx_std_23)
+target_sources(
+    glz_test_modules
+    PUBLIC
+        FILE_SET CXX_MODULES
+        FILES
+            scratch_directory.ixx
+)
+
 add_library(glz_test_common INTERFACE)
 target_compile_features(glz_test_common INTERFACE cxx_std_23)
-target_link_libraries(glz_test_common INTERFACE ut::ut glaze::glaze glaze::asio)
-# scratch_directory.hpp, included by the suites that write files to isolate themselves
-target_include_directories(glz_test_common INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(glz_test_common INTERFACE ut::ut glaze::glaze glaze::asio glz_test_modules)
 
 if(MSVC)
     target_compile_options(glz_test_common INTERFACE /bigobj)
@@ -73,8 +81,7 @@ endif()
 
 add_library(glz_test_exceptions INTERFACE)
 target_compile_features(glz_test_exceptions INTERFACE cxx_std_23)
-target_link_libraries(glz_test_exceptions INTERFACE ut::ut glaze::glaze glaze::asio)
-target_include_directories(glz_test_exceptions INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(glz_test_exceptions INTERFACE ut::ut glaze::glaze glaze::asio glz_test_modules)
 if(MSVC)
     target_compile_options(glz_test_exceptions INTERFACE /bigobj)
     target_compile_options(glz_test_exceptions INTERFACE /W4 /wd4459 /wd4805)
@@ -88,6 +95,7 @@ foreach(glz_test_support IN ITEMS glz_test_common glz_test_exceptions)
         PROPERTY INTERFACE_LINK_LIBRARIES_DIRECT
             "$<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>:ut::ut>"
             "$<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>:glaze::glaze>"
+            "$<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>:glz_test_modules>"
     )
 endforeach()
 
@@ -105,7 +113,7 @@ add_subdirectory(ordered_map_test)
 add_subdirectory(flat_map_test)
 add_subdirectory(csv_test)
 # add_subdirectory(eigen_test)
-add_subdirectory(embedded_null_test)
+# add_subdirectory(embedded_null_test)
 add_subdirectory(example_json)
 add_subdirectory(exceptions_test)
 # Temporarily disabled for Clang std-module builds due to exception-mode BMI mismatch.

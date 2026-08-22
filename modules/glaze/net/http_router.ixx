@@ -5,11 +5,13 @@ export module glaze.net.http_router;
 import std;
 
 export import glaze.net.http;
+export import glaze.net.http_headers;
 export import glaze.net.http_streaming;
 import glaze.net.url;
 export import glaze.net.websocket_connection;
 
 import glaze.json.generic;
+import glaze.util.compare;
 import glaze.util.key_transformers;
 
 import glaze.core.opts;
@@ -30,30 +32,6 @@ using std::size_t;
 
 namespace glz
 {
-   namespace detail
-   {
-      struct request_line
-      {
-         http_method method;
-         std::string_view target;
-         bool is_http11;
-      };
-   }
-
-   // Request context object
-   struct request
-   {
-      http_method method{};
-      std::string target{}; // Full request target (path + query string)
-      std::string path{}; // Path component only (without query string)
-      std::unordered_map<std::string, std::string> params{}; // Path parameters (e.g., :id)
-      std::unordered_map<std::string, std::string> query{}; // Query parameters (e.g., ?limit=10)
-      glz::http_headers headers{};
-      std::string body{};
-      std::string remote_ip{};
-      uint16_t remote_port{};
-   };
-
    // Serialized to the response body when response::body<Opts>(value) fails
    // to write `value`. Declared at namespace scope so glaze's reflection can
    // name the type; function-local types are not reflectable on GCC.

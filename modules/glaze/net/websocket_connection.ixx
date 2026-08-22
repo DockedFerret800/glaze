@@ -3,8 +3,6 @@
 module;
 #include "glaze/ext/asio_include.hpp"
 
-#include "glaze/util/compare.hpp"
-
 // Optional OpenSSL support - detected at compile time
 #if defined(GLZ_ENABLE_OPENSSL) && __has_include(<openssl/sha.h>)
 #include <openssl/sha.h>

@@ -22,6 +22,7 @@ import glaze.core.opts;
 import glaze.json.write;
 
 import glaze.util.expected;
+import glaze.util.parse;
 import glaze.util.string_literal;
 
 import glaze.concepts.container_concepts;
@@ -82,7 +83,7 @@ namespace glz
       [[nodiscard]] inline bool is_json_string_body(const char* data, size_t size, uint64_t& ascii_acc) noexcept
       {
          // Reads the four hex digits at [pos, pos+4), or -1 if they are not all hex.
-         auto hex4 = [&](size_t pos) -> int32_t {
+         auto hex4 = [&](size_t pos) -> std::int32_t {
             if (size - pos < 4) {
                return -1;
             }
@@ -101,7 +102,7 @@ namespace glz
                   return -1;
                v = (v << 4) | d;
             }
-            return static_cast<int32_t>(v);
+            return static_cast<std::int32_t>(v);
          };
 
          for (size_t i = 0; i < size; ++i) {
@@ -126,7 +127,7 @@ namespace glz
                case 't':
                   break;
                case 'u': {
-                  const int32_t cp = hex4(i + 1);
+                  const std::int32_t cp = hex4(i + 1);
                   if (cp < 0) {
                      return false;
                   }
@@ -140,7 +141,7 @@ namespace glz
                         return false;
                      }
                      ascii_acc |= static_cast<uint8_t>(data[i + 1]) | static_cast<uint8_t>(data[i + 2]);
-                     const int32_t low = hex4(i + 3);
+                     const std::int32_t low = hex4(i + 3);
                      if (low < 0xDC00 || low > 0xDFFF) {
                         return false;
                      }

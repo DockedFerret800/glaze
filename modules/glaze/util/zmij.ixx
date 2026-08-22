@@ -983,6 +983,19 @@ namespace glz::zmij
 
    namespace detail
    {
+      export consteval std::string_view float_write_backend() noexcept
+      {
+#if ZMIJ_USE_NEON
+         return "NEON";
+#elif ZMIJ_USE_SSE4_1
+         return "SSE4.1";
+#elif ZMIJ_USE_SSE
+         return "SSE2";
+#else
+         return "scalar";
+#endif
+      }
+
       template <typename Float, bool OptSize>
       inline auto write(Float value, char* buffer) noexcept -> char*
       {

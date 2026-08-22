@@ -10,6 +10,7 @@ import ut;
 
 using std::uint8_t;
 using std::int64_t;
+using std::size_t;
 
 namespace rpc = glz::rpc;
 using namespace ut;

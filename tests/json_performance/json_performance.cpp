@@ -3,6 +3,7 @@
 
 import std;
 import glaze;
+import glaze.tests.scratch_directory;
 import ut;
 
 using std::int32_t;

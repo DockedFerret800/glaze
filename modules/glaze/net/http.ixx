@@ -4,9 +4,10 @@ export module glaze.net.http;
 
 import std;
 
-export import glaze.net.url;
+export import glaze.net.http_headers;
+import glaze.net.url;
 
-#include "glaze/util/compare.hpp"
+import glaze.util.compare;
 
 // To deconflict Windows.h
 #ifdef DELETE
@@ -29,7 +30,7 @@ namespace glz
       std::string path{}; // Path component only (without query string)
       std::unordered_map<std::string, std::string> params{}; // Path parameters (e.g., :id)
       std::unordered_map<std::string, std::string> query{}; // Query parameters (e.g., ?limit=10)
-      std::unordered_map<std::string, std::string> headers{};
+      glz::http_headers headers{};
       std::string body{};
       std::string remote_ip{};
       std::uint16_t remote_port{};
@@ -278,7 +279,7 @@ namespace glz
    // offsets, so bytes one of them reads as the next message are chosen by
    // whoever supplied the second field (request/response smuggling). Every other
    // field name may repeat freely, so the serializers single out just these two.
-   [[nodiscard]] inline bool header_field_frames_body(std::string_view name) noexcept
+   export [[nodiscard]] inline bool header_field_frames_body(std::string_view name) noexcept
    {
       return striequal(name, "content-length") || striequal(name, "transfer-encoding");
    }
@@ -290,7 +291,7 @@ namespace glz
    //       / DIGIT / ALPHA
    // The single tchar predicate for the net stack: valid_header_name and the
    // request-line method check both build on it.
-   [[nodiscard]] inline bool is_tchar(char ch) noexcept
+   export [[nodiscard]] inline bool is_tchar(char ch) noexcept
    {
       return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '!' ||
              ch == '#' || ch == '$' || ch == '%' || ch == '&' || ch == '\'' || ch == '*' || ch == '+' || ch == '-' ||

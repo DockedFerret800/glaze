@@ -14,6 +14,10 @@
 // glz:header std=<span>
 // glz:header std=<string_view>
 // glz:header std=<type_traits>
+module;
+
+#include "glaze/simd/utf8_validation_includes.hpp"
+
 export module glaze.util.parse;
 
 import std;
@@ -29,8 +33,6 @@ import glaze.util.convert;
 import glaze.util.expected;
 import glaze.util.string_literal;
 
-#include "glaze/util/inline.hpp"
-
 using std::uint8_t;
 using std::uint16_t;
 using std::uint32_t;
@@ -39,6 +41,11 @@ using std::size_t;
 
 export namespace glz
 {
+   namespace detail::utf8_simd
+   {
+      bool validate(const uint8_t* it, const uint8_t* end) noexcept;
+   }
+
    inline constexpr std::array<bool, 256> numeric_table = [] {
       std::array<bool, 256> t{};
       t['0'] = true;
@@ -2014,3 +2021,10 @@ export namespace glz
    };
 
 }
+
+// The dependency prelude was included in the global module fragment, so only the implementation
+// definitions enter this private fragment. The generated header removes the private-fragment marker
+// and receives the inline definition instead.
+module :private;
+
+#include "glaze/simd/utf8_validation.hpp"

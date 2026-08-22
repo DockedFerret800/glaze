@@ -2,19 +2,17 @@
 // For the license information refer to glaze.ixx
 module;
 #include "glaze/ext/asio_include.hpp"
-
-#ifdef GLZ_ENABLE_SSL
-#include <openssl/ssl.h> // For SSL_set_tlsext_host_name
-#endif
 export module glaze.net.http_client;
 
 import std;
 
 import glaze.net.http;
 import glaze.net.http_router;
+import glaze.net.ssl;
 
 import glaze.json.write;
 
+import glaze.util.compare;
 import glaze.util.env;
 import glaze.util.itoa;
 import glaze.util.key_transformers;
@@ -63,7 +61,7 @@ namespace glz
 #endif
 
    // HTTP client error codes
-   enum class http_client_error {
+   export enum class http_client_error {
       success = 0,
       response_too_large, // Response body exceeds max_response_body_size
       unframed_response, // Response Content-Length is malformed or repeats with conflicting values
@@ -96,15 +94,18 @@ namespace glz
       return instance;
    }
 
-   inline std::error_code make_error_code(http_client_error e) noexcept
+   export inline std::error_code make_error_code(http_client_error e) noexcept
    {
       return {static_cast<int>(e), get_http_client_error_category()};
    }
 } // namespace glz
 
-template <>
-struct std::is_error_code_enum<glz::http_client_error> : std::true_type
-{};
+export namespace std
+{
+   template <>
+   struct is_error_code_enum<glz::http_client_error> : true_type
+   {};
+}
 
 namespace glz
 {
@@ -305,9 +306,9 @@ namespace glz
       // Content-Length at all is a legitimate response whose body runs to the end
       // of the connection, whereas one we cannot resolve to a single length has to
       // fail the request.
-      enum struct content_length_state { absent, present, unframed };
+      export enum struct content_length_state { absent, present, unframed };
 
-      struct parsed_content_length
+      export struct parsed_content_length
       {
          content_length_state state{content_length_state::absent};
          size_t value{};
@@ -326,7 +327,7 @@ namespace glz
       // A value that is not a bare decimal is rejected for the same reason: it
       // resolves to no length at all, and defaulting it to zero would leave a real
       // body sitting in the socket to be read as the next response.
-      [[nodiscard]] inline parsed_content_length read_content_length(const glz::http_headers& headers)
+      export [[nodiscard]] inline parsed_content_length read_content_length(const glz::http_headers& headers)
       {
          // RFC 9112 6.3: Transfer-Encoding overrides Content-Length, so a chunked
          // response is framed by the chunk sizes and its Content-Length is never
@@ -366,7 +367,7 @@ namespace glz
 
       // Sets the Content-Type header to application/json if the Content-Type
       // header is not already set.
-      inline glz::http_headers with_json_content_type(glz::http_headers headers)
+      export inline glz::http_headers with_json_content_type(glz::http_headers headers)
       {
          if (!headers.contains("Content-Type")) {
             headers.add("Content-Type", "application/json");

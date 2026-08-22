@@ -10,6 +10,8 @@ import glaze.core.meta_fwd;
 import glaze.core.opts;
 import glaze.core.reflect;
 
+import glaze.json.read;
+
 import ut;
 
 using std::int8_t;

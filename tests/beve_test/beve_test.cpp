@@ -1,7 +1,11 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
 
+#include <ctime>
+
 import std;
+
+import glaze.tests.scratch_directory;
 
 import glaze.api.impl;
 

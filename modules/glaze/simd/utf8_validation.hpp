@@ -15,23 +15,12 @@
 
 #pragma once
 
-#include <cstddef>
-#include <cstdint>
-#include <cstring>
-#include <string_view>
+#include "glaze/simd/utf8_validation_includes.hpp"
 
-#include "glaze/simd/simd.hpp"
-#include "glaze/util/inline.hpp"
-
-// GLZ_UTF8_GENERIC_WIDTH selects the portable backend below, which needs no target support, so it
-// enables the vector path on its own. Without it here the whole file would compile away on a host
-// with no usable backend, and the width-generic tests would silently degrade to testing the scalar
-// validator against itself. It still defers to GLZ_DISABLE_SIMD: the GLZ_USE_* macros are already
-// suppressed by it, and a build asking for no vector path should get none regardless of which macro
-// would have selected one.
-#if defined(GLZ_USE_AVX512BW) || defined(GLZ_USE_AVX2) || defined(GLZ_USE_SSSE3) || defined(GLZ_USE_NEON64) || \
-   defined(GLZ_USE_WASM_SIMD128) || (defined(GLZ_UTF8_GENERIC_WIDTH) && !defined(GLZ_DISABLE_SIMD))
-#define GLZ_UTF8_SIMD
+#if defined(GLZ_BUILDING_MODULES)
+#define GLZ_UTF8_VALIDATE_INLINE
+#else
+#define GLZ_UTF8_VALIDATE_INLINE inline
 #endif
 
 #if defined(GLZ_UTF8_SIMD)
@@ -423,7 +412,7 @@ namespace glz::detail::utf8_simd
       }
    };
 
-   inline bool validate(const uint8_t* it, const uint8_t* end) noexcept
+   GLZ_UTF8_VALIDATE_INLINE bool validate(const uint8_t* it, const uint8_t* end) noexcept
    {
       checker c{};
       const vec high_bits = set1(0x80);
@@ -479,3 +468,5 @@ namespace glz::detail::utf8_simd
 }
 
 #endif
+
+#undef GLZ_UTF8_VALIDATE_INLINE

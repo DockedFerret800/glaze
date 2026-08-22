@@ -4,6 +4,7 @@ import std;
 
 import glaze.net.http_router;
 import glaze.net.http_server;
+import glaze.util.compare;
 
 import ut;
 

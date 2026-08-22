@@ -2221,8 +2221,8 @@ void typed_array_kind_tests()
       round_trip(std::vector<uint16_t>{1, 2});
       round_trip(std::vector<uint32_t>{1, 2});
       round_trip(std::vector<uint64_t>{1, 2});
-      round_trip(std::vector<int8_t>{-1, 2});
-      round_trip(std::vector<int16_t>{-1, 2});
+      round_trip(std::vector<std::int8_t>{-1, 2});
+      round_trip(std::vector<std::int16_t>{-1, 2});
       round_trip(std::vector<int32_t>{-1, 2});
       round_trip(std::vector<int64_t>{-1, 2});
       round_trip(std::vector<float>{1.5f, -2.5f});

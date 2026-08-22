@@ -1,7 +1,20 @@
 // Glaze Library
-// For the license information refer to glaze.hpp
+// For the license information refer to glaze.ixx
+// glz:header path="glaze/net/ssl.hpp"
+// glz:header std=<concepts>
+// glz:header std=<cstddef>
+// glz:header std=<cstring>
+// glz:header std=<expected>
+// glz:header std=<optional>
+// glz:header std=<string>
+// glz:header std=<string_view>
+// glz:header std=<system_error>
+// glz:header std=<type_traits>
+// glz:header std=<utility>
+// glz:header std=<vector>
+// glz:header include="glaze/ext/glaze_asio.hpp"
 
-#pragma once
+module;
 
 // TLS/SSL support shared by the Glaze networking clients: the error category, SNI and
 // hostname verification, and everything to do with locating and loading CA trust anchors.
@@ -12,25 +25,15 @@
 //
 // On what CI covers, because the glaze_ENABLE_SSL option is misleading: no workflow sets
 // that option, but the SSL test targets define GLZ_ENABLE_SSL directly and glaze_BUILD_SSL_TESTS
-// defaults to ON, so this header is compiled, linked and run on every job that builds the
+// defaults to ON, so this module is compiled, linked and run on every job that builds the
 // networking tests - Windows included, where the ROOT-store read below executes against a
 // live certificate store. Jobs that pass -Dglaze_BUILD_SSL_TESTS=OFF are the exception.
 //
-// Included by http_client.hpp and websocket_client.hpp. Everything here is inert unless
+// Imported by glaze.net.http_client and glaze.net.websocket_client. Everything here is inert unless
 // GLZ_ENABLE_SSL is defined, apart from the ssl_error category, which stays available so
 // callers can report "SSL support was not compiled in" without conditional compilation.
 
-#include <concepts>
-#include <cstring>
-#include <expected>
-#include <optional>
-#include <string>
-#include <string_view>
-#include <system_error>
-#include <vector>
-
-#include "glaze/ext/glaze_asio.hpp"
-#include "glaze/util/env.hpp"
+#include "glaze/ext/asio_include.hpp"
 
 #ifdef GLZ_ENABLE_SSL
 // Windows is the one platform where OpenSSL cannot find the system trust anchors on its
@@ -89,15 +92,21 @@
 // clang-format on
 #endif
 
+export module glaze.net.ssl;
+
+import std;
+
+using std::size_t;
+
 namespace glz
 {
 #ifdef GLZ_ENABLE_SSL
    // The TLS stream type used by the HTTP and WebSocket clients.
-   using ssl_socket = asio::ssl::stream<asio::ip::tcp::socket>;
+   export using ssl_socket = asio::ssl::stream<asio::ip::tcp::socket>;
 #endif
 
    // SSL error codes for detailed error reporting
-   enum class ssl_error {
+   export enum class ssl_error {
       success = 0,
       ssl_not_supported, // HTTPS requested but SSL support not compiled in
       sni_hostname_failed, // Failed to set SNI hostname (SSL_set_tlsext_host_name)
@@ -157,16 +166,19 @@ namespace glz
    }
 
    // Create std::error_code from ssl_error
-   inline std::error_code make_error_code(ssl_error e) noexcept
+   export inline std::error_code make_error_code(ssl_error e) noexcept
    {
       return {static_cast<int>(e), get_ssl_error_category()};
    }
 } // namespace glz
 
 // Enable automatic conversion from glz::ssl_error to std::error_code
-template <>
-struct std::is_error_code_enum<glz::ssl_error> : std::true_type
-{};
+export namespace std
+{
+   template <>
+   struct is_error_code_enum<glz::ssl_error> : true_type
+   {};
+}
 
 namespace glz
 {
@@ -174,7 +186,7 @@ namespace glz
    {
 #ifdef GLZ_ENABLE_SSL
       // Configure SNI and hostname verification for client TLS connections.
-      inline bool configure_ssl_client_hostname(ssl_socket& sock, const std::string& host)
+      export inline bool configure_ssl_client_hostname(ssl_socket& sock, const std::string& host)
       {
          if (!SSL_set_tlsext_host_name(sock.native_handle(), host.c_str())) {
             return false;
@@ -241,7 +253,8 @@ namespace glz
       // Elsewhere (Linux, macOS, the BSDs) OpenSSL's default verify paths already resolve
       // to the system bundle, so this returns 0 without touching the context: there,
       // set_default_verify_paths() *is* the OS store.
-      inline std::expected<size_t, std::error_code> load_os_ca_certificates([[maybe_unused]] asio::ssl::context& ctx)
+      export inline std::expected<size_t, std::error_code> load_os_ca_certificates(
+         [[maybe_unused]] asio::ssl::context& ctx)
       {
 #if defined(_WIN32) && !defined(GLZ_DISABLE_WINDOWS_CERT_STORE)
          X509_STORE* store = ::SSL_CTX_get_cert_store(ctx.native_handle());
@@ -316,14 +329,14 @@ namespace glz
       // Both steps are best effort: a platform whose default verify paths resolve to
       // nothing (notably Windows) still gets its OS store, and callers can add their own
       // on top either way.
-      inline void seed_platform_trust_anchors(asio::ssl::context& ctx)
+      export inline void seed_platform_trust_anchors(asio::ssl::context& ctx)
       {
          asio::error_code ec;
          ctx.set_default_verify_paths(ec);
          (void)load_os_ca_certificates(ctx);
       }
 
-      inline std::expected<void, std::error_code> add_ca_file(asio::ssl::context& ctx, std::string_view path)
+      export inline std::expected<void, std::error_code> add_ca_file(asio::ssl::context& ctx, std::string_view path)
       {
          asio::error_code ec;
          ctx.load_verify_file(std::string(path), ec);
@@ -333,7 +346,8 @@ namespace glz
          return {};
       }
 
-      inline std::expected<void, std::error_code> add_ca_directory(asio::ssl::context& ctx, std::string_view path)
+      export inline std::expected<void, std::error_code> add_ca_directory(asio::ssl::context& ctx,
+                                                                          std::string_view path)
       {
          asio::error_code ec;
          ctx.add_verify_path(std::string(path), ec);
@@ -347,7 +361,7 @@ namespace glz
       // has null data, which makes OpenSSL's BIO_new_mem_buf return null, and asio then
       // reports success having added nothing. An empty bundle would otherwise look loaded
       // while leaving the caller with no anchors at all.
-      inline std::expected<void, std::error_code> add_ca_pem(asio::ssl::context& ctx, std::string_view pem)
+      export inline std::expected<void, std::error_code> add_ca_pem(asio::ssl::context& ctx, std::string_view pem)
       {
          if (pem.empty()) {
             return std::unexpected(make_error_code(ssl_error::no_certificates_added));
@@ -360,7 +374,7 @@ namespace glz
          return {};
       }
 
-      enum class ssl_ca_source { explicit_file, env_ssl_cert_file, env_ssl_cert_dir, default_verify_paths };
+      export enum class ssl_ca_source { explicit_file, env_ssl_cert_file, env_ssl_cert_dir, default_verify_paths };
 
       inline std::optional<std::string_view> non_empty_path(std::optional<std::string_view> value)
       {
@@ -370,7 +384,7 @@ namespace glz
          return std::nullopt;
       }
 
-      inline std::optional<std::string_view> to_sv_opt(const std::optional<std::string>& value)
+      export inline std::optional<std::string_view> to_sv_opt(const std::optional<std::string>& value)
       {
          if (value && !value->empty()) {
             return std::string_view{*value};
@@ -378,7 +392,7 @@ namespace glz
          return std::nullopt;
       }
 
-      std::optional<std::string_view> to_sv_opt(std::optional<std::string>&&) = delete;
+      export std::optional<std::string_view> to_sv_opt(std::optional<std::string>&&) = delete;
 
       template <typename Loader>
       concept ssl_ca_path_loader = requires(Loader&& loader, std::string_view path) {
@@ -390,7 +404,7 @@ namespace glz
          { std::forward<Loader>(loader)() } -> std::convertible_to<std::error_code>;
       };
 
-      template <ssl_ca_path_loader LoadFile, ssl_ca_path_loader LoadDir, ssl_ca_default_loader LoadDefault>
+      export template <ssl_ca_path_loader LoadFile, ssl_ca_path_loader LoadDir, ssl_ca_default_loader LoadDefault>
       inline std::expected<ssl_ca_source, std::error_code> configure_ssl_ca_fallback(
          std::optional<std::string_view> explicit_file, std::optional<std::string_view> env_cert_file,
          std::optional<std::string_view> env_cert_dir, LoadFile&& load_file, LoadDir&& load_dir,

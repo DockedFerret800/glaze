@@ -24,7 +24,7 @@
 // glz:header std=<vector>
 module;
 
-#include "glaze/simd/simd.hpp"
+#include "glaze/simd/simd_config.hpp"
 
 export module glaze.json.write;
 
@@ -50,6 +50,7 @@ import glaze.thread.atomic;
 import glaze.file.file_ops;
 
 import glaze.util.parse;
+import glaze.util.bit;
 import glaze.util.dump;
 import glaze.util.for_each;
 import glaze.util.itoa;
@@ -115,7 +116,7 @@ namespace glz
       // reservation in to<JSON, str_t>::op. A byte-at-a-time count costs about as much as the
       // escaping write it is sizing, so this reuses the writer's own 8-byte scan: a block with
       // nothing to escape adds nothing to the size and is skipped whole.
-      inline size_t escaped_string_size(const std::string_view str) noexcept
+      export inline size_t escaped_string_size(const std::string_view str) noexcept
       {
          const size_t n = str.size();
          size_t size = n;
@@ -1200,7 +1201,7 @@ namespace glz
       // for what is pinned and why. UTF-8 is deliberately not checked here: that is the reader's
       // job, it is on by default there, and unlike the escaping decision it costs a real pass
       // over every string.
-      template <auto Opts, class B>
+      export template <auto Opts, class B>
       GLZ_ALWAYS_INLINE void emit_untrusted_string(is_context auto& ctx, const std::string_view s, B& out, size_t& ix)
       {
          to<JSON, std::string_view>::template op<untrusted_string_emit_opts<Opts>>(s, ctx, out, ix);

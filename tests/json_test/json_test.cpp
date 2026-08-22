@@ -4,6 +4,7 @@
 import std;
 
 import glaze;
+import glaze.tests.scratch_directory;
 
 import glaze.core.array_apply;
 import glaze.core.constraint;

@@ -20,6 +20,7 @@ import glaze.json.write;
 import glaze.core.common;
 import glaze.core.context;
 import glaze.core.opts;
+import glaze.core.read;
 
 import glaze.util.expected;
 import glaze.util.dump;

@@ -25,6 +25,7 @@ endif()
 
 if(GLAZE_ENABLE_MODULES)
   add_library(glaze_glaze STATIC)
+  target_compile_definitions(glaze_glaze PRIVATE GLZ_BUILDING_MODULES)
   if (PROJECT_IS_TOP_LEVEL)
     set_target_properties(glaze_glaze PROPERTIES POSITION_INDEPENDENT_CODE ON)
   endif()

@@ -5268,7 +5268,7 @@ namespace glz
       }
    };
 
-   struct opts_validate : opts
+   export struct opts_validate : opts
    {
       bool validate_skipped = true;
       bool validate_trailing_whitespace = true;

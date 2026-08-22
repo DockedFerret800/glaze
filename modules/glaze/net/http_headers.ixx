@@ -14,7 +14,7 @@ namespace glz
 {
    namespace detail
    {
-      [[nodiscard]] inline std::string_view trim_optional_whitespace(std::string_view text)
+      export [[nodiscard]] inline std::string_view trim_optional_whitespace(std::string_view text)
       {
          size_t first_non_whitespace = text.find_first_not_of(" \t");
          if (first_non_whitespace == std::string_view::npos) {
@@ -64,7 +64,7 @@ namespace glz
         public:
          using iterator_concept = std::bidirectional_iterator_tag;
          using iterator_category = std::bidirectional_iterator_tag;
-         using difference_type = ptrdiff_t;
+         using difference_type = std::ptrdiff_t;
          using value_type = http_headers::value_type;
          using reference = std::conditional_t<IsConst, const value_type&, value_type&>;
          using pointer = std::conditional_t<IsConst, const value_type*, value_type*>;

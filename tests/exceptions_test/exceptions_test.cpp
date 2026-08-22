@@ -2,6 +2,7 @@
 // For the license information refer to glaze.ixx
 
 import glaze;
+import glaze.tests.scratch_directory;
 
 import glaze.exceptions;
 

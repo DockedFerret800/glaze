@@ -9,6 +9,7 @@ import glaze;
 import ut;
 
 import glaze.tests.json_perf_common;
+import glaze.tests.scratch_directory;
 
 using std::int32_t;
 using std::int64_t;

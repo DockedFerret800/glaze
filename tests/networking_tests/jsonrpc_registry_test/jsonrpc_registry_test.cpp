@@ -4,9 +4,12 @@
 import std;
 
 import glaze;
+import glaze.ext.jsonrpc;
 import glaze.rpc.registry;
 
 import ut;
+
+using std::size_t;
 
 using namespace ut;
 

@@ -9,9 +9,11 @@ import std;
 
 import glaze.net.http;
 import glaze.net.http_client;
+import glaze.net.ssl;
 import glaze.net.websocket_connection;
 
 import glaze.util.atoi;
+import glaze.util.compare;
 import glaze.util.itoa;
 
 using std::uint16_t;

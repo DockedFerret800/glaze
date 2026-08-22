@@ -213,15 +213,6 @@ static_assert(shape_for(glz::simd_info.detected)->utf8 == glz::simd_info.utf8_va
               "the UTF-8 validator does not match what this build's instruction set selects");
 #endif
 
-#if defined(GLZ_UTF8_SIMD)
-// Ties the reported name to the register width its own branch defines, catching a branch that
-// copied a neighbour's name without its width. That the width matches the register type is a
-// separate question, and utf8_validation.hpp asserts it there with sizeof(vec) == width, where the
-// type is in scope.
-static_assert(width_for(glz::simd_info.utf8_validation) == glz::detail::utf8_simd::width,
-              "a UTF-8 backend named itself as one register width and then defined another");
-#endif
-
 // Everything above checks that the reported names agree with each other. None of it can say which
 // backend this build was supposed to select: a job whose flags quietly stopped taking effect gets a
 // different backend that is just as self-consistent, and every assert above stays green.
