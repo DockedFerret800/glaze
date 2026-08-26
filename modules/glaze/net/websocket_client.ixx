@@ -1,5 +1,24 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
+// glz:header path="glaze/net/websocket_client.hpp"
+// glz:header std=<algorithm>
+// glz:header std=<atomic>
+// glz:header std=<cctype>
+// glz:header std=<cstddef>
+// glz:header std=<cstdint>
+// glz:header std=<expected>
+// glz:header std=<functional>
+// glz:header std=<istream>
+// glz:header std=<memory>
+// glz:header std=<mutex>
+// glz:header std=<random>
+// glz:header std=<string>
+// glz:header std=<string_view>
+// glz:header std=<system_error>
+// glz:header std=<type_traits>
+// glz:header std=<utility>
+// glz:header std=<variant>
+// glz:header std=<vector>
 module;
 #include "glaze/ext/asio_include.hpp"
 

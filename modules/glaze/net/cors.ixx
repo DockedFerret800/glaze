@@ -1,5 +1,12 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
+// glz:header path="glaze/net/cors.hpp"
+// glz:header std=<algorithm>
+// glz:header std=<cstddef>
+// glz:header std=<functional>
+// glz:header std=<string>
+// glz:header std=<string_view>
+// glz:header std=<vector>
 export module glaze.net.cors;
 
 import std;

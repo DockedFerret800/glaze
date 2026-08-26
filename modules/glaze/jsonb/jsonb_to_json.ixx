@@ -5,6 +5,7 @@
 // glz:header std=<cstddef>
 // glz:header std=<cstdint>
 // glz:header std=<cstring>
+// glz:header std=<limits>
 // glz:header std=<string>
 // glz:header std=<type_traits>
 export module glaze.jsonb.jsonb_to_json;

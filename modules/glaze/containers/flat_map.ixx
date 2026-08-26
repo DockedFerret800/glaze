@@ -7,7 +7,10 @@
 // glz:header std=<functional>
 // glz:header std=<initializer_list>
 // glz:header std=<iterator>
+// glz:header std=<memory>
+// glz:header std=<optional>
 // glz:header std=<stdexcept>
+// glz:header std=<type_traits>
 // glz:header std=<utility>
 // glz:header std=<vector>
 export module glaze.containers.flat_map;

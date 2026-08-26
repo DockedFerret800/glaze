@@ -1,5 +1,18 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
+// glz:header path="glaze/net/http_headers.hpp"
+// glz:header std=<algorithm>
+// glz:header std=<cstddef>
+// glz:header std=<initializer_list>
+// glz:header std=<iterator>
+// glz:header std=<memory>
+// glz:header std=<optional>
+// glz:header std=<ranges>
+// glz:header std=<string>
+// glz:header std=<string_view>
+// glz:header std=<type_traits>
+// glz:header std=<utility>
+// glz:header std=<vector>
 module;
 #include "glaze/util/attributes.hpp"
 export module glaze.net.http_headers;

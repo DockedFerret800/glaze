@@ -28,6 +28,7 @@
 // glz:header std=<cstdint>
 // glz:header std=<cstring>
 // glz:header std=<limits>
+// glz:header std=<string_view>
 // glz:header std=<type_traits>
 module;
 #ifndef ZMIJ_USE_SIMD

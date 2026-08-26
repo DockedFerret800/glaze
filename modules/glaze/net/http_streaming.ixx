@@ -1,5 +1,13 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
+// glz:header path="glaze/net/http_streaming.hpp"
+// glz:header std=<cstdint>
+// glz:header std=<functional>
+// glz:header std=<memory>
+// glz:header std=<string>
+// glz:header std=<string_view>
+// glz:header std=<system_error>
+// glz:header std=<utility>
 module;
 #include "glaze/ext/asio_include.hpp"
 

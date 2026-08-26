@@ -1,6 +1,7 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
 // glz:header path="glaze/json/lazy.hpp"
+// glz:header std=<array>
 // glz:header std=<charconv>
 // glz:header std=<cstddef>
 // glz:header std=<cstdint>

@@ -12,6 +12,7 @@
 // glz:header std=<limits>
 // glz:header std=<memory>
 // glz:header std=<new>
+// glz:header std=<optional>
 // glz:header std=<stdexcept>
 // glz:header std=<string>
 // glz:header std=<string_view>

@@ -1,5 +1,17 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
+// glz:header path="glaze/net/http.hpp"
+// glz:header std=<algorithm>
+// glz:header std=<cctype>
+// glz:header std=<charconv>
+// glz:header std=<cstddef>
+// glz:header std=<cstdint>
+// glz:header std=<expected>
+// glz:header std=<optional>
+// glz:header std=<string>
+// glz:header std=<string_view>
+// glz:header std=<system_error>
+// glz:header std=<unordered_map>
 export module glaze.net.http;
 
 import std;
