@@ -211,7 +211,7 @@ namespace glz
    // out of it -- including an error return from a nested value -- puts the depth back. The step is
    // the writer's indentation width, passed in because it is a formatting option the context knows
    // nothing about.
-   template <class Ctx>
+   export template <class Ctx>
    struct indent_guard
    {
       Ctx& ctx;

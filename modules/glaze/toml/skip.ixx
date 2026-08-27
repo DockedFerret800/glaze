@@ -1,7 +1,10 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
 // glz:header path="glaze/toml/skip.hpp"
+// glz:header std=<cstddef>
 export module glaze.toml.skip;
+
+import std;
 
 import glaze.toml.common;
 
@@ -9,6 +12,8 @@ import glaze.core.context;
 import glaze.core.opts;
 
 #include "glaze/util/inline.hpp"
+
+using std::size_t;
 
 namespace glz::toml
 {

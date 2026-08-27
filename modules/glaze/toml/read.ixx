@@ -43,6 +43,7 @@ import glaze.file.file_ops;
 import glaze.reflection.to_tuple;
 import glaze.tuplet;
 
+import glaze.util.bit_array;
 import glaze.util.expected;
 import glaze.util.for_each;
 import glaze.util.glaze_fast_float;

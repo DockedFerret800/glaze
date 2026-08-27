@@ -5,17 +5,11 @@
 // that GCC compiles it near its memory ceiling, and the ambiguous-nest case below instantiates a
 // reader per level of a 24-deep variant nest. Kept together they push cc1plus into an OOM.
 
-#include <chrono>
-#include <cstdint>
-#include <map>
-#include <memory>
-#include <optional>
-#include <string>
-#include <variant>
-#include <vector>
+import std;
 
-#include "glaze/toml.hpp"
-#include "ut/ut.hpp"
+import glaze.toml;
+
+import ut;
 
 using namespace ut;
 
