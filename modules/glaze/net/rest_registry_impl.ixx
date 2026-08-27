@@ -29,14 +29,14 @@ using std::uint32_t;
 
 namespace glz
 {
-   export template <>
+   template <>
    struct protocol_storage<REST>
    {
       using type = http_router;
    };
 
    // Implementation for REST protocol
-   export template <auto Opts>
+   template <auto Opts>
    struct registry_impl<Opts, REST>
    {
       using enum http_method;
