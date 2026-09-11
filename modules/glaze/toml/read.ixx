@@ -25,7 +25,7 @@ import std;
 
 import glaze.toml.common;
 import glaze.toml.opts;
-import glaze.toml.skip;
+export import glaze.toml.skip;
 
 import glaze.core.chrono;
 import glaze.core.common;

@@ -33,7 +33,7 @@ export module glaze.json.read;
 import std;
 
 import glaze.json.json_concepts;
-import glaze.json.skip;
+export import glaze.json.skip;
 
 import glaze.core.chrono;
 import glaze.core.buffer_traits;

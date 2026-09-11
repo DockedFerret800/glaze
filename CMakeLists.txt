@@ -58,6 +58,8 @@ if (MSVC)
     $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->
     $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/Zc:lambda>)
 
+  target_compile_options(glaze_glaze ${GLAZE_LIB_TYPE} $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/bigobj>)
+
   # Whole-program optimization changes codegen quality, never correctness, and the
   # top-level build is glaze's own test suite -- correctness checks that gain nothing
   # from it. Because glaze is header-only, every test executable pays a full link-time

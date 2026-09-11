@@ -36,7 +36,7 @@ import glaze.core.chrono;
 import glaze.core.buffer_traits;
 import glaze.core.common;
 import glaze.core.context;
-import glaze.core.custom;
+export import glaze.core.custom;
 import glaze.core.custom_meta;
 import glaze.core.meta;
 import glaze.core.opts;
@@ -1414,7 +1414,7 @@ namespace glz
       }
    };
 
-   template <auto Opts, bool minified_check = true, class B>
+   export template <auto Opts, bool minified_check = true, class B>
    GLZ_ALWAYS_INLINE void write_array_entry_separator(is_context auto&& ctx, B&& b, auto& ix)
    {
       if constexpr (Opts.prettify) {

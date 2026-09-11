@@ -19,7 +19,8 @@ import glaze.core.common;
 import glaze.core.opts;
 import glaze.core.read;
 import glaze.core.reflect;
-import glaze.json.schema;
+export import glaze.json.read;
+export import glaze.json.schema;
 import glaze.rpc.registry_fwd;
 
 import glaze.util.string_literal;
