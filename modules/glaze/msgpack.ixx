@@ -3,6 +3,9 @@
 // glz:header path="glaze/msgpack.hpp"
 export module glaze.msgpack;
 
+export import glaze.core.as_array_wrapper;
+export import glaze.core.manage;
+export import glaze.core.wrapper_traits;
 export import glaze.core.opts;
 export import glaze.core.meta;
 export import glaze.core.reflect;

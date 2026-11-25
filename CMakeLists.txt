@@ -4,7 +4,7 @@ include(cmake/prelude.cmake)
 
 project(
     glaze
-    VERSION 9.0.0
+    VERSION 9.1.0
     LANGUAGES CXX
 )
 
@@ -168,7 +168,7 @@ endif(glaze_ENABLE_SSL)
 option(glaze_ENABLE_REFLECTION26 "Enable C++26 P2996 reflection (requires Bloomberg clang-p2996 or compatible compiler)" OFF)
 
 if(glaze_ENABLE_REFLECTION26)
-  target_compile_definitions(glaze_glaze INTERFACE GLZ_REFLECTION26=1)
+  target_compile_definitions(glaze_glaze ${GLAZE_LIB_TYPE} GLZ_REFLECTION26=1)
 endif(glaze_ENABLE_REFLECTION26)
 
 # Make `size` the build-wide default optimization level. Every call site that does not
