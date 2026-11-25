@@ -33,7 +33,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gcc: [14]
+        gcc: [15]
         build_type: [Debug]
         std: [23]
 
