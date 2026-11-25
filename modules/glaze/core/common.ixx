@@ -56,7 +56,7 @@ namespace glz
    }
 
    // write out a string like type without quoting it
-   template <class T>
+   export template <class T>
    struct raw_t
    {
       static constexpr bool glaze_wrapper = true;

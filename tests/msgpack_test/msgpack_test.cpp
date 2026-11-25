@@ -1,6 +1,7 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
 
+import glaze.tests.speculation_guard;
 import glaze.msgpack;
 
 import glaze.json;
@@ -986,7 +987,7 @@ suite msgpack_variant_tagging = [] {
    };
 
    // Untagged resolution is speculative, so an ambiguous nest re-parses each subtree per alternative
-   // at every level. The speculation budget caps that; see speculation_guard.hpp for what is timed.
+   // at every level. The speculation budget caps that; see speculation_guard.ixx for what is timed.
    "an ambiguous nest is bounded rather than exponential"_test = [] {
       const auto build = [](size_t levels) {
          std::string buffer;

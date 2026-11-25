@@ -55,6 +55,8 @@ import glaze.util.type_traits;
 import glaze.util.variant;
 import glaze.util.string_literal;
 
+using std::uint8_t;
+
 #include "glaze/util/inline.hpp"
 
 using std::uint32_t;
@@ -1558,7 +1560,7 @@ namespace glz
          }
 
          ++it; // Skip '['
-         skip_ws_and_comments(it, end);
+         skip_ws_newlines_and_comments(it, end);
 
          value.clear();
 
@@ -1617,7 +1619,7 @@ namespace glz
             return;
          }
 
-         skip_ws_newlines_and_comments(it, end);
+         skip_ws_and_comments(it, end);
 
          if (it == end || *it != '[') {
             ctx.error = error_code::syntax_error;
@@ -1625,7 +1627,7 @@ namespace glz
          }
 
          ++it; // Skip '['
-         skip_ws_and_comments(it, end);
+         skip_ws_newlines_and_comments(it, end);
 
          // Handle empty array
          if (it != end && *it == ']') {

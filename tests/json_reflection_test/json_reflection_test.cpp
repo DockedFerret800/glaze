@@ -2,7 +2,12 @@
 // For the license information refer to glaze.ixx
 
 import std;
+
 import glaze;
+
+import glaze.core.reflect;
+import glaze.util.primes_64;
+
 import ut;
 
 import glaze.reflection.to_tuple;
@@ -14,6 +19,7 @@ using std::uint16_t;
 using std::int32_t;
 using std::uint32_t;
 using std::uint64_t;
+using std::size_t;
 
 using namespace ut;
 
@@ -761,7 +767,7 @@ suite json_schema = [] {
       // when you update this string
       expect(
          schema ==
-         R"({"type":"object","properties":{"array":{"type":"array","items":{"type":"string"},"maxItems":4},"b":{"type":"boolean"},"c":{"type":"string"},"color":{"type":"string","oneOf":[{"title":"Red","const":"Red"},{"title":"Green","const":"Green"},{"title":"Blue","const":"Blue"}]},"d":{"$ref":"#/$defs/double"},"i":{"$ref":"#/$defs/int32_t"},"map":{"type":"object","additionalProperties":{"$ref":"#/$defs/int32_t"}},"optional":{"anyOf":[{"$ref":"#/$defs/V3"},{"type":"null"}]},"thing":{"$ref":"#/$defs/sub_thing"},"thing2array":{"type":"array","items":{"type":"object","properties":{"a":{"$ref":"#/$defs/double"},"b":{"type":"string"},"c":{"$ref":"#/$defs/double"},"d":{"$ref":"#/$defs/double"},"e":{"$ref":"#/$defs/double"},"f":{"$ref":"#/$defs/float"},"g":{"$ref":"#/$defs/double"},"h":{"$ref":"#/$defs/double"}},"additionalProperties":false},"maxItems":1},"thing_ptr":{"anyOf":[{"$ref":"#/$defs/sub_thing"},{"type":"null"}]},"vb":{"type":"array","items":{"type":"boolean"}},"vec3":{"$ref":"#/$defs/V3"},"vector":{"type":"array","items":{"$ref":"#/$defs/V3"}}},"additionalProperties":false,"$defs":{"V3":{"type":"object","properties":{"x":{"$ref":"#/$defs/double"},"y":{"$ref":"#/$defs/double"},"z":{"$ref":"#/$defs/double"}},"additionalProperties":false},"double":{"type":"number","minimum":-1.7976931348623157E308,"maximum":1.7976931348623157E308},"float":{"type":"number","minimum":-3.4028234663852886E38,"maximum":3.4028234663852886E38},"int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647},"sub_thing":{"type":"object","properties":{"a":{"$ref":"#/$defs/double"},"b":{"type":"string"}},"additionalProperties":false}},"title":"Thing"})")
+         R"({"type":"object","properties":{"array":{"type":"array","items":{"type":"string"},"maxItems":4},"b":{"type":"boolean"},"c":{"type":"string"},"color":{"type":"string","oneOf":[{"title":"Red","const":"Red"},{"title":"Green","const":"Green"},{"title":"Blue","const":"Blue"}]},"d":{"$ref":"#/$defs/double"},"i":{"$ref":"#/$defs/std::int32_t"},"map":{"type":"object","additionalProperties":{"$ref":"#/$defs/std::int32_t"}},"optional":{"anyOf":[{"$ref":"#/$defs/V3"},{"type":"null"}]},"thing":{"$ref":"#/$defs/sub_thing"},"thing2array":{"type":"array","items":{"type":"object","properties":{"a":{"$ref":"#/$defs/double"},"b":{"type":"string"},"c":{"$ref":"#/$defs/double"},"d":{"$ref":"#/$defs/double"},"e":{"$ref":"#/$defs/double"},"f":{"$ref":"#/$defs/float"},"g":{"$ref":"#/$defs/double"},"h":{"$ref":"#/$defs/double"}},"additionalProperties":false},"maxItems":1},"thing_ptr":{"anyOf":[{"$ref":"#/$defs/sub_thing"},{"type":"null"}]},"vb":{"type":"array","items":{"type":"boolean"}},"vec3":{"$ref":"#/$defs/V3"},"vector":{"type":"array","items":{"$ref":"#/$defs/V3"}}},"additionalProperties":false,"$defs":{"V3":{"type":"object","properties":{"x":{"$ref":"#/$defs/double"},"y":{"$ref":"#/$defs/double"},"z":{"$ref":"#/$defs/double"}},"additionalProperties":false},"double":{"type":"number","minimum":-1.7976931348623157E308,"maximum":1.7976931348623157E308},"float":{"type":"number","minimum":-3.4028234663852886E38,"maximum":3.4028234663852886E38},"std::int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647},"sub_thing":{"type":"object","properties":{"a":{"$ref":"#/$defs/double"},"b":{"type":"string"}},"additionalProperties":false}},"title":"Thing"})")
          << schema;
    };
 };
@@ -874,7 +880,7 @@ suite meta_schema_reflection_tests = [] {
       const auto json_schema = glz::write_json_schema<meta_schema_t>().value_or("error");
       expect(
          json_schema ==
-         R"({"type":"object","properties":{"file_name":{"type":"string","description":"provide a file name to load"},"is_valid":{"type":"boolean","description":"for validation"},"x":{"$ref":"#/$defs/int32_t","description":"x is a special integer","minimum":1}},"additionalProperties":false,"$defs":{"int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"meta_schema_t"})")
+         R"({"type":"object","properties":{"file_name":{"type":"string","description":"provide a file name to load"},"is_valid":{"type":"boolean","description":"for validation"},"x":{"$ref":"#/$defs/std::int32_t","description":"x is a special integer","minimum":1}},"additionalProperties":false,"$defs":{"std::int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"meta_schema_t"})")
          << json_schema;
    };
 
@@ -887,7 +893,7 @@ suite meta_schema_reflection_tests = [] {
       const auto json_schema = glz::write_json_schema<local_schema_t>().value_or("error");
       expect(
          json_schema ==
-         R"({"type":"object","properties":{"file_name":{"type":"string","description":"provide a file name to load"},"is_valid":{"type":"boolean","description":"for validation"},"x":{"$ref":"#/$defs/int32_t","description":"x is a special integer","minimum":1}},"additionalProperties":false,"$defs":{"int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"local_schema_t"})")
+         R"({"type":"object","properties":{"file_name":{"type":"string","description":"provide a file name to load"},"is_valid":{"type":"boolean","description":"for validation"},"x":{"$ref":"#/$defs/std::int32_t","description":"x is a special integer","minimum":1}},"additionalProperties":false,"$defs":{"std::int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"local_schema_t"})")
          << json_schema;
    };
 };

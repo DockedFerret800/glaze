@@ -4,19 +4,7 @@
 import std;
 
 import glaze;
-import glaze.tests.scratch_directory;
 
-import glaze.core.array_apply;
-import glaze.core.constraint;
-import glaze.core.custom;
-import glaze.core.std_error_code;
-import glaze.core.to;
-
-import glaze.file.raw_or_file;
-
-import glaze.api.impl;
-import glaze.api.type_support;
-import glaze.api.tuple;
 import glaze.api.std.array;
 import glaze.api.std.deque;
 import glaze.api.std.functional;
@@ -27,21 +15,24 @@ import glaze.api.std.shared_ptr;
 import glaze.api.std.string;
 import glaze.api.std.variant;
 import glaze.api.std.vector;
+import glaze.api.tuple;
+import glaze.api.type_support;
+import glaze.containers.flat_map;
+import glaze.core.array_apply;
+import glaze.core.std_error_code;
+import glaze.file.raw_or_file;
 import glaze.hardware.volatile_array;
-import glaze.concepts.container_concepts;
 import glaze.record.recorder;
 import glaze.thread.threadpool;
 import glaze.trace;
 import glaze.tuplet;
-import glaze.reflection.to_tuple;
-import glaze.containers.flat_map;
-
-import glaze.util.for_each;
-import glaze.util.parse;
 import glaze.util.string_literal;
 import glaze.util.type_traits;
 
 import glaze.tests.json.json_test_shared_types;
+import glaze.tests.minimal_buffer;
+import glaze.tests.scratch_directory;
+import glaze.tests.speculation_guard;
 
 import ut;
 
@@ -15555,41 +15546,10 @@ suite member_function_pointer_serialization = [] {
 
       std::string buffer{};
       expect(not glz::write<opts_with_function_pointers{}>(thing, buffer));
-#if GLZ_REFLECTION26
-      // P2996 display_string_of behavior varies by compiler:
-      // - Bloomberg Clang: "(member-function-pointer-type)"
-      // - GCC: full signature like traditional GCC
-      bool pass =
-         (buffer == R"json({"name":"test_item","description":"(member-function-pointer-type)"})json") ||
-         (buffer ==
-          R"({"name":"test_item","description":"std::__cxx11::basic_string<char> (MemberFunctionThing::*)() const"})") ||
-         (buffer == R"({"name":"test_item","description":"std::basic_string<char> (MemberFunctionThing::*)() const"})");
-      expect(pass) << buffer;
-#elif defined(__GNUC__) && !defined(__clang__)
-#if defined(_GLIBCXX_USE_CXX11_ABI) && _GLIBCXX_USE_CXX11_ABI == 0
-      // Old ABI uses std::basic_string<char> without __cxx11 namespace
-      expect(buffer ==
-             R"({"name":"test_item","description":"std::basic_string<char> (MemberFunctionThing::*)() const"})")
-         << buffer;
-#else
-      expect(
-         buffer ==
-         R"({"name":"test_item","description":"std::__cxx11::basic_string<char> (MemberFunctionThing::*)() const"})")
-         << buffer;
-#endif
-#elif defined(_MSC_VER)
-      // MSVC produces fully qualified type names with calling convention
-      expect(buffer.find("MemberFunctionThing") != std::string::npos && buffer.find("test_item") != std::string::npos)
-         << buffer;
-#elif defined(__clang__) && defined(__GLIBCXX__)
-      // Clang printing libstdc++ types strips the __cxx11 inline namespace regardless of ABI.
-      expect(buffer ==
-             R"({"name":"test_item","description":"std::basic_string<char> (MemberFunctionThing::*)() const"})")
-         << buffer;
-#else
-      expect(buffer == R"({"name":"test_item","description":"std::string (MemberFunctionThing::*)() const"})")
-         << buffer;
-#endif
+      using member_pointer = decltype(&MemberFunctionThing::get_description);
+      const auto expected = std::string{R"({"name":"test_item","description":")"} +
+                            std::string{glz::name_v<member_pointer>} + R"("})";
+      expect(buffer == expected) << buffer;
    };
 
    "member function only serialization"_test = [] {
@@ -16485,7 +16445,7 @@ suite json_recursion_depth_limit = [] {
       // The JSON analogue of the BEVE cascade: two array alternatives, so every level tries both,
       // with a malformed leaf at the bottom that every level retries. 339 bytes took 40 seconds
       // before the speculation budget capped the total re-parsed bytes; the cost no longer grows
-      // with depth. See speculation_guard.hpp for what is timed.
+      // with depth. See speculation_guard.ixx for what is timed.
       const auto build = [](size_t levels) {
          std::string b;
          for (size_t i = 0; i < levels; ++i) b += R"([{"child":)";
@@ -16521,7 +16481,7 @@ suite json_recursion_depth_limit = [] {
    };
 };
 
-// Buffers that promise only what glaze's concepts require; see tests/minimal_buffer.hpp.
+// Buffers that promise only what glaze's concepts require; see tests/minimal_buffer.ixx.
 // Regression coverage for GitHub issue #2854.
 using test_buffers::qt_style_buffer;
 using test_buffers::read_only_buffer;

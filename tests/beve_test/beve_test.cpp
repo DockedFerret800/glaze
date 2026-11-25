@@ -1,8 +1,6 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
 
-#include <ctime>
-
 import std;
 
 import glaze.tests.scratch_directory;
@@ -42,6 +40,9 @@ import glaze.json.write;
 import glaze.trace;
 import glaze.tuplet;
 import glaze.util.for_each;
+
+import glaze.tests.minimal_buffer;
+import glaze.tests.speculation_guard;
 
 import ut;
 
@@ -9399,7 +9400,7 @@ suite beve_recursion_depth_limit = [] {
       // rejected one is rewound and the next tried. Nest that and the re-parses multiply -- measured
       // at ~4.3x per level, so 189 bytes took 55 seconds and 256 levels would never return. The
       // speculation budget caps the total re-parsed bytes, so the cost stops growing with depth;
-      // see speculation_guard.hpp for what is timed.
+      // see speculation_guard.ixx for what is timed.
       glz_test::expect_bounded_by_speculation_budget(
          ambiguous_nest,
          [](const std::string& buffer, glz::context& ctx) {

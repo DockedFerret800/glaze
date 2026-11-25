@@ -1,10 +1,9 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
+import glaze.core.seek;
 import glaze.json.patch;
 import glaze.core.context;
 import glaze.json.generic;
-import glaze.json.write;
-import glaze.util.fast_float;
 
 import std;
 

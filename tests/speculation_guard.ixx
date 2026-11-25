@@ -1,13 +1,16 @@
-import std;
 // Glaze Library
-// For the license information refer to glaze.hpp
+// For the license information refer to glaze.ixx
 
-#pragma once
+export module glaze.tests.speculation_guard;
 
+import std;
 
 import glaze.core.context;
 import glaze.core.reflect;
+
 import ut;
+
+using std::size_t;
 
 // Variant resolution is speculative: an alternative is parsed to find out whether it fits, and a
 // rejected one is rewound and the next tried. Nest that and the re-parses multiply, so the cost of
@@ -24,7 +27,7 @@ import ut;
 // `read(buffer, ctx)` reads it through glz::read, which seeds the budget. Every read must fail with
 // `expected`. The `exhaustive` depth must resolve without spending the budget; `shallow` and `deep`
 // must both be stopped by it, and `deep` must not cost more than a few times `shallow`.
-namespace glz_test
+export namespace glz_test
 {
    template <class Build, class Read>
    void expect_bounded_by_speculation_budget(Build&& build, Read&& read, const glz::error_code expected,

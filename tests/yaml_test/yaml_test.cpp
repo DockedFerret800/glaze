@@ -3,29 +3,13 @@
 
 import glaze.yaml;
 
-#include <array>
-#include <chrono>
-#include <cmath>
-#include <cstdio>
-#include <deque>
-#include <forward_list>
-#include <limits>
-#include <list>
-#include <map>
-#include <memory>
-#include <optional>
-#include <set>
-#include <string>
-#include <tuple>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <variant>
-#include <vector>
+import std;
 
 import glaze.json.generic;
-#include "minimal_buffer.hpp"
+
+import glaze.tests.minimal_buffer;
 import glaze.tests.scratch_directory;
+
 import ut;
 
 using std::uint64_t;

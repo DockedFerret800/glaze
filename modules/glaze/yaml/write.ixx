@@ -1,36 +1,58 @@
 // Glaze Library
 // For the license information refer to glaze.ixx
 // glz:header path="glaze/yaml/write.hpp"
+// glz:header std=<array>
+// glz:header std=<chrono>
+// glz:header std=<concepts>
+// glz:header std=<cstddef>
+// glz:header std=<cstdint>
+// glz:header std=<cstring>
+// glz:header std=<map>
+// glz:header std=<optional>
+// glz:header std=<span>
+// glz:header std=<string>
+// glz:header std=<string_view>
+// glz:header std=<tuple>
+// glz:header std=<type_traits>
+// glz:header std=<unordered_map>
+// glz:header std=<utility>
+// glz:header std=<variant>
 export module glaze.yaml.write;
 
 import std;
-import glaze.util.tuple;
-import glaze.reflection.to_tuple;
-import glaze.core.tuple;
-import glaze.util.expected;
-import glaze.util.string_literal;
-import glaze.util.type_traits;
+
 import glaze.concepts.container_concepts;
-import glaze.core.meta;
-import glaze.core.common;
-import glaze.core.context;
+
 import glaze.core.buffer_traits;
 import glaze.core.chrono;
+import glaze.core.common;
+import glaze.core.context;
+import glaze.core.custom;
 import glaze.core.custom_meta;
+import glaze.core.meta;
 import glaze.core.opts;
 import glaze.core.reflect;
 import glaze.core.to;
-import glaze.core.custom;
+import glaze.core.tuple;
 import glaze.core.write;
 import glaze.core.write_chars;
 import glaze.core.write_wrappers;
+
+import glaze.reflection.to_tuple;
+
 import glaze.util.dump;
+import glaze.util.expected;
 import glaze.util.for_each;
 import glaze.util.non_finite;
 import glaze.util.parse;
+import glaze.util.string_literal;
+import glaze.util.tuple;
+import glaze.util.type_traits;
 import glaze.util.variant;
+
 import glaze.yaml.common;
 import glaze.yaml.opts;
+
 using std::int32_t;
 
 using std::size_t;

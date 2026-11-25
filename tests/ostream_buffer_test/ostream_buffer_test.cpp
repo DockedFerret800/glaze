@@ -3,6 +3,9 @@
 
 import std;
 
+using std::uint64_t;
+
+
 import glaze.core.context;
 import glaze.core.opts;
 import glaze.core.ostream_buffer;

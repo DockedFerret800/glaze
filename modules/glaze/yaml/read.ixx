@@ -8,31 +8,38 @@
 export module glaze.yaml.read;
 
 import std;
-import glaze.util.tuple;
-import glaze.util.bit_array;
-import glaze.util.fast_float;
-import glaze.core.opts;
-import glaze.reflection.to_tuple;
-import glaze.core.tuple;
-import glaze.util.expected;
-import glaze.util.string_literal;
+
 import glaze.concepts.container_concepts;
-import glaze.core.meta;
-import glaze.core.context;
 import glaze.core.chrono;
 import glaze.core.common;
+import glaze.core.context;
+import glaze.core.meta;
+import glaze.core.opts;
 import glaze.core.read;
 import glaze.core.reflect;
+import glaze.core.tuple;
+
 import glaze.file.file_ops;
+
 import glaze.json.generic;
+
+import glaze.reflection.to_tuple;
+
+import glaze.util.bit_array;
+import glaze.util.expected;
+import glaze.util.fast_float;
+import glaze.util.for_each;
 import glaze.util.glaze_fast_float;
 import glaze.util.nullable_traits;
 import glaze.util.parse;
+import glaze.util.string_literal;
+import glaze.util.tuple;
 import glaze.util.type_traits;
 import glaze.util.variant;
 import glaze.yaml.common;
 import glaze.yaml.opts;
 import glaze.yaml.skip;
+
 using std::int32_t;
 
 #include "glaze/util/inline.hpp"

@@ -1,4 +1,3 @@
-import std;
 // Tests for the streaming progress callback and the body framing it rests on:
 //   1. on_progress reports the running body byte count against the total the response
 //      framed itself with. The total is known before any body arrives, so a caller can
@@ -12,9 +11,16 @@ import std;
 //      what leaves the socket reusable. Responses that carry no body at all - a HEAD
 //      reply, a 304 - end at once however they are framed.
 
+import std;
 
 import glaze.net.http_client;
+
 import ut;
+
+#include "glaze/ext/asio_include.hpp"
+
+using std::size_t;
+using std::uint16_t;
 
 #if defined(GLZ_USING_BOOST_ASIO)
 namespace asio

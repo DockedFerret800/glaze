@@ -6,7 +6,6 @@
 
 import std;
 
-import glaze.cbor;
 import glaze;
 
 import ut;

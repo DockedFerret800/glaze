@@ -13,6 +13,8 @@
 export module glaze.beve.lazy;
 
 import std;
+
+import glaze.core.buffer_traits;
 import glaze.core.read;
 
 import glaze.beve.header;

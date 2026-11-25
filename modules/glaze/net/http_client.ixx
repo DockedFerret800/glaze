@@ -533,7 +533,7 @@ namespace glz
       // Location of "../v2/thing" becomes a request-target the next server can route rather
       // than one it answers with 400. Any query string must already be split off by the
       // caller.
-      inline std::string remove_dot_segments(std::string_view path)
+      export inline std::string remove_dot_segments(std::string_view path)
       {
          std::string output;
          output.reserve(path.size());
@@ -589,7 +589,7 @@ namespace glz
    // Location is allowed to be an absolute URL, scheme-relative ("//host/path"),
    // root-relative ("/path"), a query-only reference ("?page=2"), or a relative reference
    // ("thing"), and servers send all of these in practice.
-   inline std::expected<url_parts, std::error_code> resolve_redirect_url(const url_parts& base,
+   export inline std::expected<url_parts, std::error_code> resolve_redirect_url(const url_parts& base,
                                                                          std::string_view location)
    {
       // A fragment identifies a part of the retrieved representation and never travels on
@@ -695,7 +695,7 @@ namespace glz
 
    // 300 (Multiple Choices) names no single target to follow and 305 (Use Proxy) was
    // deprecated for being unsafe to act on; 304 is not a redirect at all.
-   inline bool is_redirect_status(int status_code) noexcept
+   export inline bool is_redirect_status(int status_code) noexcept
    {
       return status_code == 301 || status_code == 302 || status_code == 303 || status_code == 307 || status_code == 308;
    }
@@ -704,7 +704,7 @@ namespace glz
    {
       // The request as it stands at one point in a redirect chain. Both the sync and async
       // paths carry one of these so the hop rules below are written once.
-      struct redirect_request
+      export struct redirect_request
       {
          std::string method;
          url_parts url;
@@ -716,7 +716,7 @@ namespace glz
       // Rewrite `request` into the follow-up the 3xx response asks for, or say why the hop
       // cannot be taken. The hop limit lives here rather than in each caller so the sync
       // and async paths cannot drift apart on what counts as a hop.
-      inline std::expected<void, std::error_code> apply_redirect(const response& resp, redirect_request& request,
+      export inline std::expected<void, std::error_code> apply_redirect(const response& resp, redirect_request& request,
                                                                  size_t max_hops)
       {
          if (request.hops >= max_hops) {

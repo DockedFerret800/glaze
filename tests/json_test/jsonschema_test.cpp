@@ -457,7 +457,7 @@ suite schema_tests = [] {
       std::string schema_str = glz::write_json_schema<required_meta>().value_or("error");
       expect(
          schema_str ==
-         R"({"type":"object","properties":{"a":{"$ref":"#/$defs/int32_t"},"b":{"$ref":"#/$defs/int32_t"},"reserved_1":{"$ref":"#/$defs/int32_t"},"reserved_2":{"$ref":"#/$defs/int32_t"}},"additionalProperties":false,"$defs":{"int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"required":["a","b"],"title":"required_meta"})");
+         R"({"type":"object","properties":{"a":{"$ref":"#/$defs/std::int32_t"},"b":{"$ref":"#/$defs/std::int32_t"},"reserved_1":{"$ref":"#/$defs/std::int32_t"},"reserved_2":{"$ref":"#/$defs/std::int32_t"}},"additionalProperties":false,"$defs":{"std::int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"required":["a","b"],"title":"required_meta"})");
    };
 
    "Opts.error_on_missing_keys as fallback"_test = [] {
@@ -471,12 +471,12 @@ suite schema_tests = [] {
       // std::optional<T> is canonicalized to anyOf:[ref-to-T, null] and never appears in $defs.
       expect(
          schema_str_req ==
-         R"({"type":"object","properties":{"important":{"$ref":"#/$defs/int32_t"},"unimportant":{"anyOf":[{"$ref":"#/$defs/int32_t"},{"type":"null"}]}},"additionalProperties":false,"$defs":{"int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"required":["important"],"title":"error_on_missing_keys_test"})")
+         R"({"type":"object","properties":{"important":{"$ref":"#/$defs/std::int32_t"},"unimportant":{"anyOf":[{"$ref":"#/$defs/std::int32_t"},{"type":"null"}]}},"additionalProperties":false,"$defs":{"std::int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"required":["important"],"title":"error_on_missing_keys_test"})")
          << schema_str_req;
 
       expect(
          schema_str_nreq ==
-         R"({"type":"object","properties":{"important":{"$ref":"#/$defs/int32_t"},"unimportant":{"anyOf":[{"$ref":"#/$defs/int32_t"},{"type":"null"}]}},"additionalProperties":false,"$defs":{"int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"error_on_missing_keys_test"})")
+         R"({"type":"object","properties":{"important":{"$ref":"#/$defs/std::int32_t"},"unimportant":{"anyOf":[{"$ref":"#/$defs/std::int32_t"},{"type":"null"}]}},"additionalProperties":false,"$defs":{"std::int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"error_on_missing_keys_test"})")
          << schema_str_nreq;
    };
 
@@ -582,7 +582,7 @@ suite value_type_variant_schema = [] {
       auto schema = glz::write_json_schema<tuple_t>().value();
       expect(
          schema ==
-         R"({"type":"array","prefixItems":[{"type":"integer","minimum":-2147483648,"maximum":2147483647},{"type":"string"},{"type":"boolean"}],"items":false,"title":"std::tuple<int32_t,std::string,bool>","maxItems":3})")
+         R"({"type":"array","prefixItems":[{"type":"integer","minimum":-2147483648,"maximum":2147483647},{"type":"string"},{"type":"boolean"}],"items":false,"title":"std::tuple<std::int32_t,std::string,bool>","maxItems":3})")
          << schema;
    };
 
@@ -636,7 +636,7 @@ suite value_type_variant_schema = [] {
       auto schema = glz::write_json_schema<std::vector<int>>().value();
       expect(
          schema ==
-         R"({"type":"array","items":{"$ref":"#/$defs/int32_t"},"$defs":{"int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"std::vector<int32_t>"})")
+         R"({"type":"array","items":{"$ref":"#/$defs/std::int32_t"},"$defs":{"std::int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"std::vector<std::int32_t>"})")
          << schema;
    };
 
@@ -1086,7 +1086,7 @@ suite optional_never_referenced_test = [] {
       auto schema = glz::write_json_schema<issue_2498::HoldsNamed>().value();
       expect(eq(
          schema,
-         R"({"type":"object","properties":{"n":{"anyOf":[{"type":"object","properties":{"x":{"$ref":"#/$defs/int32_t"}},"additionalProperties":false},{"type":"null"}]}},"additionalProperties":false,"$defs":{"int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"issue_2498::HoldsNamed"})"))
+         R"({"type":"object","properties":{"n":{"anyOf":[{"type":"object","properties":{"x":{"$ref":"#/$defs/std::int32_t"}},"additionalProperties":false},{"type":"null"}]}},"additionalProperties":false,"$defs":{"std::int32_t":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"title":"issue_2498::HoldsNamed"})"))
          << schema;
    };
 

@@ -1,3 +1,6 @@
+# Capture the library modules before test subdirectories add their fixtures.
+get_target_property(glaze_library_modules glaze_glaze CXX_MODULE_SET)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -35,12 +38,16 @@ option(glaze_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSan
 
 add_library(glz_test_modules STATIC)
 target_compile_features(glz_test_modules PUBLIC cxx_std_23)
+target_link_libraries(glz_test_modules PUBLIC glaze::glaze ut::ut)
 target_sources(
     glz_test_modules
     PUBLIC
         FILE_SET CXX_MODULES
         FILES
+            minimal_buffer.ixx
             scratch_directory.ixx
+            speculation_guard.ixx
+            wide_variant_types.ixx
 )
 
 add_library(glz_test_common INTERFACE)

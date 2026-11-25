@@ -805,7 +805,7 @@ namespace glz
    }
 
    // Runtime check: invoke a custom_t getter and return whether the result is null
-   template <class V>
+   export template <class V>
    bool custom_getter_is_null(V&& custom_val, auto&& ctx)
    {
       using CV = std::remove_cvref_t<V>;
@@ -1935,7 +1935,7 @@ namespace glz
    // and the second indexes it at runtime, so every path here has a counterpart there.
 
    // Do not call this at runtime, it is assumes the key lies within min_length and max_length
-   inline constexpr uint64_t full_hash_impl(const sv key, const uint64_t seed, const auto min_length,
+   export inline constexpr uint64_t full_hash_impl(const sv key, const uint64_t seed, const auto min_length,
                                             const auto max_length) noexcept
    {
       if (max_length < 8) {
@@ -1973,7 +1973,7 @@ namespace glz
 
    // runtime full hash algorithm
    // Must stay bit for bit identical to full_hash_impl, which built the table this indexes
-   template <uint64_t min_length, uint64_t max_length, uint64_t seed>
+   export template <uint64_t min_length, uint64_t max_length, uint64_t seed>
    inline constexpr uint64_t full_hash(const auto* it, const size_t n) noexcept
    {
       if constexpr (max_length < 8) {
@@ -3669,7 +3669,7 @@ namespace glz
    // unlabeled alternative as the default for an unrecognized id -- so an alternative past the end of
    // `ids` has no id to write. Indexing there reads past a static array. A valueless variant has no
    // alternative to name at all, and neither does an index past the alternative list.
-   template <is_variant T>
+   export template <is_variant T>
    [[nodiscard]] inline bool variant_missing_id(auto&& value, is_context auto&& ctx) noexcept
    {
       if (value.index() >= ids_v<T>.size()) [[unlikely]] {
@@ -3683,7 +3683,7 @@ namespace glz
    // Map an already-decoded discriminator to an alternative index. Returns variant_size when the id
    // names no alternative and there is no unlabeled default. The formats differ only in how they
    // decode the id from their own bytes; this rule is the same for all of them.
-   template <is_variant T>
+   export template <is_variant T>
    [[nodiscard]] constexpr size_t variant_index_from_id(size_t index) noexcept
    {
       if (index < ids_v<T>.size()) [[likely]] {

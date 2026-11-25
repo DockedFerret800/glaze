@@ -75,7 +75,7 @@ namespace glz
    //
    // Every entry point that builds iterators over a caller's buffer has to go through this. Reached
    // by two paths before, they disagreed, and the one that skipped it read out of bounds.
-   template <auto Opts, class Buf>
+   export template <auto Opts, class Buf>
    consteval auto parse_opts_for()
    {
       auto o = is_padded_off<Opts>();

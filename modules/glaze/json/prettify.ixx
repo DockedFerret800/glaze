@@ -308,7 +308,7 @@ namespace glz
 
       // Returns the number of bytes written, which is what a bounded output has no other way to
       // learn: it has no size to be shrunk to the result the way a resizable one does.
-      template <auto Opts, contiguous In, output_buffer Out>
+      export template <auto Opts, contiguous In, output_buffer Out>
       inline size_t prettify_json(is_context auto&& ctx, In&& in, Out&& out)
       {
          if constexpr (resizable<Out>) {

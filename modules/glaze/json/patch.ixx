@@ -16,6 +16,8 @@
 export module glaze.json.patch;
 
 import std;
+
+import glaze.core.read;
 import glaze.core.opts;
 import glaze.core.seek;
 

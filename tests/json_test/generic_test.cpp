@@ -4,7 +4,6 @@
 import std;
 
 import glaze.json;
-import glaze.core.seek;
 import glaze.containers.ordered_map;
 
 import ut;

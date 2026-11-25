@@ -18,6 +18,7 @@ import glaze.json.read;
 import glaze.json.skip;
 import glaze.json.write;
 
+import glaze.core.buffer_traits;
 import glaze.core.common;
 import glaze.core.context;
 import glaze.core.opts;

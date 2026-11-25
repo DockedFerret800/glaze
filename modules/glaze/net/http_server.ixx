@@ -3324,7 +3324,7 @@ namespace glz
    };
 
    // Utility functions for common streaming patterns
-   namespace streaming_utils
+   export namespace streaming_utils
    {
       // Create a periodic data sender (works with both HTTP and HTTPS)
       // Uses enable_shared_from_this to avoid circular reference memory leaks
