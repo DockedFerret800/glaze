@@ -32,7 +32,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: windows-2025-vs2026
+    runs-on: windows-2025
     timeout-minutes: 25
 
     strategy:
@@ -54,7 +54,7 @@ jobs:
       run: ctest --build-config ${{env.BUILD_TYPE}} --timeout 300
 
   build-direct-clang-cl:
-    runs-on: windows-2025-vs2026
+    runs-on: windows-2025
     timeout-minutes: 25
 
     steps:
