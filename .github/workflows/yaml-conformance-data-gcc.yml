@@ -46,7 +46,7 @@ jobs:
 
     - name: Configure CMake
       run: |
-        CXXFLAGS="-g3" cmake -B ${{github.workspace}}/build \
+        CXXFLAGS="-g3" cmake -G Ninja -B ${{github.workspace}}/build \
           -DCMAKE_BUILD_TYPE=${{matrix.build_type}} \
           -DCMAKE_CXX_STANDARD=${{matrix.std}} \
           -Dglaze_YAML_CONFORMANCE_DATA=ON \
