@@ -354,7 +354,7 @@ suite serialization = [] {
       expect(parsed == t);
    };
 
-   "type name"_test = [] { expect(glz::name_v<glz::tuple<int32_t, double>> == "glz::tuple<std::int32_t,double>"); };
+   "type name"_test = [] { expect(glz::name_v<glz::tuple<int32_t, double>> == "glz::tuple<int32_t,double>"); };
 };
 
 int main() { return 0; }

@@ -172,7 +172,7 @@ void tests()
    "vector type name"_test = [] {
       {
          std::string_view v = glz::name_v<std::vector<std::vector<int>*>>;
-         expect(v == "std::vector<std::vector<std::int32_t>*>");
+         expect(v == "std::vector<std::vector<int32_t>*>");
       }
       {
          std::string_view v = glz::name_v<std::vector<float>>;
@@ -183,7 +183,7 @@ void tests()
    "unordered type name"_test = [] {
       {
          std::string_view u = glz::name_v<std::unordered_map<uint64_t, std::string_view>>;
-         expect(u == "std::unordered_map<std::uint64_t,std::string_view>");
+         expect(u == "std::unordered_map<uint64_t,std::string_view>");
       }
    };
 
@@ -236,10 +236,10 @@ void tests()
 
    "function type name"_test = [] {
       std::string_view f = glz::name_v<std::function<double(const int&, const double&)>>;
-      expect(f == "std::function<double(const std::int32_t&,const double&)>");
+      expect(f == "std::function<double(const int32_t&,const double&)>");
 
       f = glz::name_v<std::function<int(const my_struct&)>>;
-      expect(f == R"(std::function<std::int32_t(const my_struct&)>)") << f;
+      expect(f == R"(std::function<int32_t(const my_struct&)>)") << f;
    };
 
    "function type io"_test = [&] {

@@ -36,23 +36,21 @@ import glaze.reflection.requires_key;
 import glaze.core.write;
 import glaze.core.custom_meta;
 
-import glaze.api.std.string;
-import glaze.api.std.variant;
-
-import glaze.api.std.array;
-import glaze.api.std.deque;
-import glaze.api.std.functional;
-import glaze.api.std.list;
-import glaze.api.std.map;
-import glaze.api.std.optional;
-import glaze.api.std.shared_ptr;
-import glaze.api.std.tuple;
-import glaze.api.std.unique_ptr;
-import glaze.api.std.unordered_map;
-import glaze.api.std.vector;
-
-import glaze.api.tuple;
-import glaze.api.type_support;
+export import glaze.api.std.array;
+export import glaze.api.std.deque;
+export import glaze.api.std.functional;
+export import glaze.api.std.list;
+export import glaze.api.std.map;
+export import glaze.api.std.optional;
+export import glaze.api.std.shared_ptr;
+export import glaze.api.std.string;
+export import glaze.api.std.tuple;
+export import glaze.api.std.unique_ptr;
+export import glaze.api.std.unordered_map;
+export import glaze.api.std.variant;
+export import glaze.api.std.vector;
+export import glaze.api.tuple;
+export import glaze.api.type_support;
 
 import glaze.tuplet;
 

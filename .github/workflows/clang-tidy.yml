@@ -2,7 +2,7 @@ name: Clang Tidy Include Cleaner
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, modules ] # todo: remove
   push:
     branches: [ main ]
 
