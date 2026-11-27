@@ -55,7 +55,7 @@ void tests()
    "vector type name"_test = [] {
       {
          std::string_view v = glz::name_v<std::vector<std::vector<int>*>>;
-         expect(v == "std::vector<std::vector<std::int32_t>*>");
+         expect(v == "std::vector<std::vector<int32_t>*>");
       }
       {
          std::string_view v = glz::name_v<std::vector<float>>;
@@ -66,7 +66,7 @@ void tests()
    "unordered type name"_test = [] {
       {
          std::string_view u = glz::name_v<std::unordered_map<uint64_t, std::string_view>>;
-         expect(u == "std::unordered_map<std::uint64_t,std::string_view>");
+         expect(u == "std::unordered_map<uint64_t,std::string_view>");
       }
    };
 
@@ -100,21 +100,21 @@ void tests()
       auto* x = io->get<int>("/x");
       auto* y = io->get<double>("/y");
       auto* z = io->get<std::vector<double>>("/z");
-      expect(*x == 7);
-      expect(*y == 5.5);
-      expect(*z == std::vector<double>{1.0, 2.0});
+      expect(x && *x == 7);
+      expect(y && *y == 5.5);
+      expect(z && *z == std::vector<double>{1.0, 2.0});
    };
 
    "function type name"_test = [] {
       std::string_view f = glz::name_v<std::function<double(const int&, const double&)>>;
-      expect(f == "std::function<double(const std::int32_t&,const double&)>");
+      expect(f == "std::function<double(const int32_t&,const double&)>");
    };
 
    "function type io"_test = [&] {
       int x = 7;
       double y = 5.5;
       auto* f = io->get<std::function<double(const int&, const double&)>>("/f");
-      expect((*f)(x, y) == 38.5);
+      expect(f && (*f)(x, y) == 38.5);
    };
 }
 

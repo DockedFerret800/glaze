@@ -222,7 +222,7 @@ suite structs_of_functions = [] {
       response = call_json(server, {""});
       expect(
          response.body ==
-         R"({"i":42,"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<std::int32_t()>","void_func":"std::function<void()>","max":"std::function<double(std::vector<double>&)>"})")
+         R"({"i":42,"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<int32_t()>","void_func":"std::function<void()>","max":"std::function<double(std::vector<double>&)>"})")
          << response.body;
    };
 
@@ -263,13 +263,13 @@ suite structs_of_functions = [] {
       response = call_json(server, {"/my_functions"});
       expect(
          response.body ==
-         R"({"i":0,"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<std::int32_t()>","void_func":"std::function<void()>","max":"std::function<double(std::vector<double>&)>"})")
+         R"({"i":0,"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<int32_t()>","void_func":"std::function<void()>","max":"std::function<double(std::vector<double>&)>"})")
          << response.body;
 
       response = call_json(server, {""});
       expect(
          response.body ==
-         R"({"my_functions":{"i":0,"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<std::int32_t()>","void_func":"std::function<void()>","max":"std::function<double(std::vector<double>&)>"},"meta_functions":{"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<std::int32_t()>"},"append_awesome":"std::function<std::string(const std::string&)>","my_string":""})")
+         R"({"my_functions":{"i":0,"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<int32_t()>","void_func":"std::function<void()>","max":"std::function<double(std::vector<double>&)>"},"meta_functions":{"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<int32_t()>"},"append_awesome":"std::function<std::string(const std::string&)>","my_string":""})")
          << response.body;
    };
 
@@ -417,14 +417,14 @@ suite structs_of_functions_beve = [] {
       expect(!glz::beve_to_json(response.body, res));
       expect(
          res ==
-         R"({"i":0,"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<std::int32_t()>","void_func":"std::function<void()>","max":"std::function<double(std::vector<double>&)>"})")
+         R"({"i":0,"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<int32_t()>","void_func":"std::function<void()>","max":"std::function<double(std::vector<double>&)>"})")
          << res;
 
       response = call_beve(server, {""});
       expect(!glz::beve_to_json(response.body, res));
       expect(
          res ==
-         R"({"my_functions":{"i":0,"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<std::int32_t()>","void_func":"std::function<void()>","max":"std::function<double(std::vector<double>&)>"},"meta_functions":{"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<std::int32_t()>"},"append_awesome":"std::function<std::string(const std::string&)>","my_string":""})")
+         R"({"my_functions":{"i":0,"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<int32_t()>","void_func":"std::function<void()>","max":"std::function<double(std::vector<double>&)>"},"meta_functions":{"hello":"std::function<std::string_view()>","world":"std::function<std::string_view()>","get_number":"std::function<int32_t()>"},"append_awesome":"std::function<std::string(const std::string&)>","my_string":""})")
          << res;
    };
 
@@ -966,7 +966,7 @@ suite deeply_nested_tests = [] {
 
       expect(
          response.body ==
-         R"e({"middle":{"inner":{"val":99,"get_val":"std::int32_t (inner_t::*)()"},"name":"modified_mid","get_name":"std::string_view (middle_t::*)()"},"score":1.23,"set_score":"void (outer_t::*)(double)"})e")
+         R"e({"middle":{"inner":{"val":99,"get_val":"int32_t (inner_t::*)()"},"name":"modified_mid","get_name":"std::string_view (middle_t::*)()"},"score":1.23,"set_score":"void (outer_t::*)(double)"})e")
          << response.body;
    };
 

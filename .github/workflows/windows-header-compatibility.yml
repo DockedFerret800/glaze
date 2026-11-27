@@ -28,6 +28,7 @@ on:
   pull_request:
     branches:
       - main
+      - modules # todo: remove
     paths:
       - 'modules/**'
       - 'tools/glz_generate_headers.py'

@@ -281,6 +281,10 @@ export namespace glz
    template <auto N, class T>
    inline constexpr auto member_nameof = []() constexpr { return member_nameof_impl<N, T>::stripped_literal; }();
 
+#if defined(_MSC_VER) && !defined(__clang__)
+   consteval std::string_view strip_leading_decl_keywords(std::string_view str);
+#endif
+
    template <class T>
    constexpr auto type_name = [] {
       constexpr std::string_view name = detail::mangled_name<T>();
@@ -291,7 +295,7 @@ export namespace glz
 #else
       constexpr auto name_with_keyword =
          tmp.substr(tmp.rfind(detail::reflect_type::begin) + detail::reflect_type::begin.size());
-      return name_with_keyword.substr(name_with_keyword.find(' ') + 1);
+      return strip_leading_decl_keywords(name_with_keyword);
 #endif
    }();
 
@@ -582,7 +586,7 @@ export namespace glz
          else if (str.starts_with("struct ")) {
             str.remove_prefix(7);
          }
-         else if (str.starts_with("class ")) {
+         else if (str.starts_with("class ") || str.starts_with("union ")) {
             str.remove_prefix(6);
          }
          else {

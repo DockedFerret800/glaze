@@ -11,6 +11,7 @@ on:
   pull_request:
     branches:
       - main
+      - modules # todo: remove
     paths-ignore:
       - '**/*.md'
       - 'docs/**'
